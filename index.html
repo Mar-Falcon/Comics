@@ -5,8 +5,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="https://kit.fontawesome.com/5a448a2b79.js" crossorigin="anonymous"></script>   
 </head>
 <body>
-    
+    <header>
+        <div>
+            <h1>ADA COMICS</h1>
+        </div>
+        <img src="./hero.jpg" alt="heroImage">
+    </header>
+    <main>
+        <div>
+            <h2>Search</h2>
+            <form>
+                <div>
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Enter your search">
+                </div>
+                <div>
+                    <label for="type"></label>
+                    <select name="type" id="type">
+                        <option value="comics">COMICS</option>
+                        <option value="characters">CHARACTERS</option>
+                    </select>
+                    <label for="orderBy"></label>
+                    <select name="orderBy" id="orderBy">
+                        <option value="a-z">A-Z</option>
+                        <option value="z-a">Z-A</option>
+                        <option value="moreRecent">MORE RECENT</option>
+                        <option value="lessRecent">LESS RECENT</option>
+                    </select>
+                </div>
+                <input type="submit">Search</input>
+            </form>
+        </div>
+        <div>
+            <h2>Results</h2>
+            <p>0 RESULTS</p>
+            <div>
+                <img src="./portrait_uncanny.jpg" alt="">
+                <h3>Superior Spider-Man Vol. 2: Otto-matic (Trade Paperback)</h3>
+            </div>
+        </div>
+        <div>
+            <button>
+                <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+            </button>
+            <button>
+                <i class="fa fa-angle-left" aria-hidden="true"></i>
+            </button>
+            <button>
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </button>
+            <button>
+                <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            </button>
+        </div>
+    </main>
+    <footer>
+        <p>Made with ❤️ by Mar, Maia y Mack</p>
+    </footer>
 </body>
 </html>
