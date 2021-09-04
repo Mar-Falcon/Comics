@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Bangers&display=swap");
-.flexColumn, header {
+.flexColumn, .searcherSelectors, header {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -19,6 +19,13 @@
           align-items: center;
 }
 
+.secondaryTitles, .searcherSelectors .selectorContainer__label, .cardsSection__p {
+  width: 100px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #949494;
+}
+
 * {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -26,6 +33,11 @@
   padding: 0;
   background-color: #ffffff;
   font-family: "Roboto", sans-serif;
+}
+
+main {
+  margin-right: 20px;
+  margin-left: 20px;
 }
 
 header {
@@ -46,4 +58,77 @@ header h1 {
   background-position: center;
   background-size: cover;
   opacity: 0.5;
+}
+
+.cardsSection {
+  margin-top: 60px;
+}
+.cardsSection__h2 {
+  margin-bottom: 20px;
+}
+.cardsSection__p {
+  margin-bottom: 20px;
+}
+
+.card__img {
+  width: 100%;
+  -webkit-box-shadow: 0 26px 24px -16px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 26px 24px -16px rgba(0, 0, 0, 0.4);
+  -webkit-transform: translateY(0);
+          transform: translateY(0);
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+}
+.card__h3 {
+  font-size: 0.9rem;
+  margin-top: 20px;
+}
+
+.card:hover {
+  -webkit-transform: translateY(-10px);
+          transform: translateY(-10px);
+  color: #e81c22;
+}
+
+.searcherSection {
+  margin-top: 60px;
+}
+
+.searcher {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border-bottom: 2px solid #151515;
+}
+.searcher__input {
+  border: 0;
+  font-size: 1.6rem;
+  margin-left: 5px;
+}
+
+.searcherSelectors .selectorContainer {
+  margin-bottom: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.searcherSelectors .selectorContainer__select {
+  width: 100px;
+  border: 0;
+  font-weight: 600;
+}
+
+.searcherButton {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: end;
+}
+.searcherButton__input {
+  background-color: #020202;
+  color: #ffffff;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1.1rem;
 }

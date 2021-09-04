@@ -16,36 +16,42 @@
         <div class="mainImg"></div>
     </header>
     <main>
-        <div>
+        <div class="searcherSection">
             <h2>Search</h2>
             <form>
-                <div>
+                <div class="searcher">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Enter your search">
+                    <input class="searcher__input" type="text" placeholder="Enter your search">
                 </div>
-                <div>
-                    <label for="type"></label>
-                    <select name="type" id="type">
-                        <option value="comics">COMICS</option>
-                        <option value="characters">CHARACTERS</option>
-                    </select>
-                    <label for="orderBy"></label>
-                    <select name="orderBy" id="orderBy">
-                        <option value="a-z">A-Z</option>
-                        <option value="z-a">Z-A</option>
-                        <option value="moreRecent">MORE RECENT</option>
-                        <option value="lessRecent">LESS RECENT</option>
-                    </select>
+                <div class="searcherSelectors">
+                    <div class="selectorContainer">
+                        <label for="type" class="selectorContainer__label">TYPE</label>
+                        <select name="type" id="type" class="selectorContainer__select">
+                            <option value="comics">COMICS</option>
+                            <option value="characters">CHARACTERS</option>
+                        </select>
+                    </div>
+                    <div class="selectorContainer">
+                        <label for="orderBy" class="selectorContainer__label">ORDER BY</label>
+                        <select name="orderBy" id="orderBy" class="selectorContainer__select">
+                            <option value="a-z">A-Z</option>
+                            <option value="z-a">Z-A</option>
+                            <option value="moreRecent">MORE RECENT</option>
+                            <option value="lessRecent">LESS RECENT</option>
+                        </select>
+                    </div>
                 </div>
-                <input type="submit">Search</input>
+                <div class="searcherButton">
+                    <input type="submit" value="SEARCH" class="searcherButton__input">
+                </div>
             </form>
         </div>
-        <div>
-            <h2>Results</h2>
-            <p>0 RESULTS</p>
-            <div>
-                <img src="./portrait_uncanny.jpg" alt="">
-                <h3>Superior Spider-Man Vol. 2: Otto-matic (Trade Paperback)</h3>
+        <div class="cardsSection">
+            <h2 class="cardsSection__h2">Results</h2>
+            <p class="cardsSection__p">0 RESULTS</p>
+            <div class="card">
+                <img src="./portrait_uncanny.jpg" alt="" class="card__img">
+                <h3 class="card__h3">Superior Spider-Man Vol. 2: Otto-matic (Trade Paperback)</h3>
             </div>
         </div>
         <div>

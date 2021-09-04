@@ -1,0 +1,39 @@
+.searcherSection{
+    margin-top: $xl-spacing;
+}
+.searcher{
+    margin-bottom: $l-spacing;
+    margin-top: $l-spacing;
+    border-bottom: 2px solid #151515;
+    &__input{
+        border: 0;
+        font-size: 1.6rem;
+        margin-left: $xs-spacing;
+    }
+}
+.searcherSelectors{
+    @extend .flexColumn;
+    .selectorContainer{
+        margin-bottom: $l-spacing;
+        display: flex;
+        &__label{
+            @extend .secondaryTitles;
+        }
+        &__select{
+            width:100px;
+            border:0;
+            font-weight: 600;
+        }
+    }
+}
+.searcherButton{
+    display: flex;
+    justify-content: end;
+    &__input{
+        background-color: $primary-color;
+        color: $secondary-color;
+        border: none;
+        padding: $s-spacing $m-spacing;
+        font-size: 1.1rem;
+    }
+}
