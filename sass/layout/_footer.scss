@@ -1,0 +1,10 @@
+footer{
+    height: 7rem;
+    text-align: center;
+    div{
+        height: $wide-cover;
+        background-color: $primary-color;
+        color: $secondary-color;
+        padding-top: 40px;
+    }
+}

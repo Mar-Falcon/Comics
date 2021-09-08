@@ -24,3 +24,9 @@
     transform: translateY(-10px);
     color: $third-color;
 }
+
+@media only screen and (min-width: 700px) {
+    .card{
+        width: 250px;
+    }
+}
