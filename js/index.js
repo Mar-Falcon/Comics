@@ -39,33 +39,34 @@ var baseUrl = "http://gateway.marvel.com/";
 var apiKey = "3837d58127c2d8d73d7bda851100d507";
 var hash = "1fcfb0ff82123c45591cd5affb7b538f";
 //Comics request
-var getComics = function () { return __awaiter(_this, void 0, void 0, function () {
+var getComics = function (offset) { return __awaiter(_this, void 0, void 0, function () {
     var response, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, fetch(baseUrl + "v1/public/comics?ts=1&apikey=" + apiKey + "&hash=" + hash)];
+            case 0: return [4 /*yield*/, fetch(baseUrl + "v1/public/comics?ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset)];
             case 1:
                 response = _a.sent();
                 return [4 /*yield*/, response.json()];
             case 2:
                 data = _a.sent();
+                console.log(data);
                 return [2 /*return*/, data];
         }
     });
 }); };
-getComics();
+getComics("0");
 var cardsContainer = document.getElementById("cardsContainer");
-var createCard = function () { return __awaiter(_this, void 0, void 0, function () {
+var createCard = function (offset) { return __awaiter(_this, void 0, void 0, function () {
     var response, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, getComics()];
+            case 0:
+                cardsContainer.innerHTML = "";
+                return [4 /*yield*/, getComics(offset)];
             case 1:
                 response = _a.sent();
                 data = response.data.results;
-                console.log(data.thumbnail);
                 data.forEach(function (element) {
-                    console.log(element);
                     var card = document.createElement("div");
                     var img = document.createElement("img");
                     var title = document.createElement("h3");
@@ -83,4 +84,79 @@ var createCard = function () { return __awaiter(_this, void 0, void 0, function 
         }
     });
 }); };
-createCard();
+//Calculating the total pages
+var offset = 0;
+var page = 1;
+var previousPage = document.getElementById("previousPage");
+var nextPage = document.getElementById("nextPage");
+var disableButtons = function () {
+    console.log(page);
+    if (page === 1) {
+        previousPage.disabled = true;
+        previousPage.style.backgroundColor = "grey";
+    }
+    else {
+        previousPage.disabled = false;
+        previousPage.style.backgroundColor = "#020202";
+    }
+};
+var getPages = function () { return __awaiter(_this, void 0, void 0, function () {
+    var response, limit, total, totalPages;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, getComics(offset)];
+            case 1:
+                response = _a.sent();
+                limit = response.data.limit;
+                total = response.data.total;
+                totalPages = total / limit;
+                console.log(totalPages);
+                if (totalPages % 1 !== 0) {
+                    totalPages = Math.ceil(totalPages);
+                }
+                return [2 /*return*/, totalPages];
+        }
+    });
+}); };
+var initFirstPage = function () {
+    createCard(offset);
+    previousPage.disabled = true;
+    previousPage.style.backgroundColor = "grey";
+};
+//Next page
+var goNextPage = function () {
+    page += 1;
+    offset += 20;
+    createCard(offset);
+};
+nextPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
+    var totalPages;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, getPages()];
+            case 1:
+                totalPages = _a.sent();
+                if (page <= totalPages) {
+                    goNextPage();
+                }
+                else {
+                    nextPage.disabled = true;
+                }
+                disableButtons();
+                return [2 /*return*/];
+        }
+    });
+}); });
+//Previous page
+var goPreviousPage = function () {
+    page -= 1;
+    offset -= 20;
+    createCard(offset);
+};
+previousPage.addEventListener("click", function () {
+    if (page > 1) {
+        goPreviousPage();
+    }
+    disableButtons();
+});
+initFirstPage();
