@@ -162,7 +162,7 @@ footer div {
 .pagination button {
   border: none;
 }
-.pagination button i {
+.pagination button .enabledButton {
   font-size: 1.8rem;
   width: 2.7rem;
   height: 2.7rem;
@@ -171,6 +171,15 @@ footer div {
   padding-top: 0.5rem;
   margin: 0 5px;
 }
-.pagination button i:hover {
+.pagination button .enabledButton:hover {
   background-color: #e81c22;
+}
+.pagination button .disabledButton {
+  font-size: 1.8rem;
+  width: 2.7rem;
+  height: 2.7rem;
+  background-color: grey;
+  color: #ffffff;
+  padding-top: 0.5rem;
+  margin: 0 5px;
 }

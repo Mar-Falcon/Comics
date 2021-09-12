@@ -11,7 +11,7 @@
 .card{
     &__img{
         width: $wide-cover;
-        box-shadow: 0 26px 24px -16px rgb(0 0 0 / 40%);
+        box-shadow: 0 26px 24px -16px rgba(0, 0, 0, 0.40);
         transform: translateY(0);
         transition: 0.2s;       
     }

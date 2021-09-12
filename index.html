@@ -49,24 +49,23 @@
         <div class="cardsSection">
             <h2 class="cardsSection__h2">Results</h2>
             <p class="cardsSection__p">0 RESULTS</p>
-            <div class="card">
-                <img src="./portrait_uncanny.jpg" alt="" class="card__img">
-                <h3 class="card__h3">Superior Spider-Man Vol. 2: Otto-matic (Trade Paperback)</h3>
+            <div id="cardsContainer">
+
             </div>
         </div>
         <div class="pagination">
             <div>
                 <button>
-                    <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                    <i id="firstPage" class="fa fa-angle-double-left enabledButton" aria-hidden="true"></i>
                 </button>
                 <button>
-                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <i id="previousPage" class="fa fa-angle-left enabledButton" aria-hidden="true"></i>
                 </button>
                 <button>
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    <i id="nextPage" class="fa fa-angle-right enabledButton" aria-hidden="true"></i>
                 </button>
                 <button>
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    <i id="lastPage" class="fa fa-angle-double-right enabledButton" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
@@ -74,5 +73,7 @@
     <footer>
         <div>Made with ❤️ by Mar, Maia y Mack</div>
     </footer>
+
+    <script src="./js/index.js"></script>
 </body>
 </html>
