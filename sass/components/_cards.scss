@@ -1,0 +1,32 @@
+.cardsSection{
+    margin-top: $xl-spacing;
+    &__h2{
+        margin-bottom: $l-spacing;
+    }
+    &__p{
+        @extend .secondaryTitles;
+        margin-bottom: $l-spacing;
+    }
+}
+.card{
+    &__img{
+        width: $wide-cover;
+        box-shadow: 0 26px 24px -16px rgb(0 0 0 / 40%);
+        transform: translateY(0);
+        transition: 0.2s;       
+    }
+    &__h3{
+        font-size: 0.9rem;
+        margin-top: $l-spacing;
+    }
+}
+.card:hover{
+    transform: translateY(-10px);
+    color: $third-color;
+}
+
+@media only screen and (min-width: 700px) {
+    .card{
+        width: 250px;
+    }
+}

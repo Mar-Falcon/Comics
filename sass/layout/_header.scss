@@ -1,0 +1,20 @@
+header{  
+    background-color: $primary-color;
+    @extend.flexColumn;
+    @extend.contentCenter;
+    h1{
+        font-family: 'Bangers', cursive;
+        background-color: $third-color;
+        color: $secondary-color;
+        padding: $xs-spacing;
+        font-size: 45px;
+    }
+}
+.mainImg{
+    width: $wide-cover;
+    min-height: 400px;
+    background-image: url(".././hero.jpg");
+    background-position: center;
+    background-size: cover;
+    opacity: 0.5;
+}

@@ -1,0 +1,14 @@
+.flexColumn{
+    display: flex;
+    flex-direction: column;
+}
+.contentCenter{
+    justify-content: center;
+    align-items: center;
+}
+.secondaryTitles{
+    width:100px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $fourth-color;
+}

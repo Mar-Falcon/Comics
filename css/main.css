@@ -1,0 +1,176 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bangers&display=swap");
+.flexColumn, .searcherSelectors, header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.contentCenter, header {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.secondaryTitles, .searcherSelectors .selectorContainer__label, .cardsSection__p {
+  width: 100px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #949494;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  font-family: "Roboto", sans-serif;
+}
+
+main {
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+header {
+  background-color: #020202;
+}
+header h1 {
+  font-family: "Bangers", cursive;
+  background-color: #e81c22;
+  color: #ffffff;
+  padding: 5px;
+  font-size: 45px;
+}
+
+.mainImg {
+  width: 100%;
+  min-height: 400px;
+  background-image: url(".././hero.jpg");
+  background-position: center;
+  background-size: cover;
+  opacity: 0.5;
+}
+
+footer {
+  height: 7rem;
+  text-align: center;
+}
+footer div {
+  height: 100%;
+  background-color: #020202;
+  color: #ffffff;
+  padding-top: 40px;
+}
+
+.cardsSection {
+  margin-top: 60px;
+}
+.cardsSection__h2 {
+  margin-bottom: 20px;
+}
+.cardsSection__p {
+  margin-bottom: 20px;
+}
+
+.card__img {
+  width: 100%;
+  -webkit-box-shadow: 0 26px 24px -16px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 26px 24px -16px rgba(0, 0, 0, 0.4);
+  -webkit-transform: translateY(0);
+          transform: translateY(0);
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+}
+.card__h3 {
+  font-size: 0.9rem;
+  margin-top: 20px;
+}
+
+.card:hover {
+  -webkit-transform: translateY(-10px);
+          transform: translateY(-10px);
+  color: #e81c22;
+}
+
+@media only screen and (min-width: 700px) {
+  .card {
+    width: 250px;
+  }
+}
+.searcherSection {
+  margin-top: 60px;
+}
+
+.searcher {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border-bottom: 2px solid #151515;
+}
+.searcher__input {
+  border: 0;
+  font-size: 1.6rem;
+  margin-left: 5px;
+}
+
+.searcherSelectors .selectorContainer {
+  margin-bottom: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.searcherSelectors .selectorContainer__select {
+  width: 100px;
+  border: 0;
+  font-weight: 600;
+}
+
+.searcherButton {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: end;
+}
+.searcherButton__input {
+  background-color: #020202;
+  color: #ffffff;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1.1rem;
+}
+
+.pagination {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+.pagination button {
+  border: none;
+}
+.pagination button i {
+  font-size: 1.8rem;
+  width: 2.7rem;
+  height: 2.7rem;
+  background-color: #020202;
+  color: #ffffff;
+  padding-top: 0.5rem;
+  margin: 0 5px;
+}
+.pagination button i:hover {
+  background-color: #e81c22;
+}

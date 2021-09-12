@@ -1,8 +1,13 @@
-@import './utils/variables';
-@import './utils/mixins';
+@import './utilities/variables';
+@import './utilities/helpers';
+@import './utilities/mixins';
 @import './vendors/bootstrap';
+@import './base/typography';
 @import './base/reset';
-//@import './layout/';
-//@import './components/';
+@import './layout/header';
+@import './layout/footer';
+@import './components/cards';
+@import './components/searcher';
+@import './components/pagination';
 @import './pages/home';
 @import './theme/admin';
