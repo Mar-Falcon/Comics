@@ -49,12 +49,11 @@ var getComics = function (offset) { return __awaiter(_this, void 0, void 0, func
                 return [4 /*yield*/, response.json()];
             case 2:
                 data = _a.sent();
-                console.log(data);
                 return [2 /*return*/, data];
         }
     });
 }); };
-getComics("0");
+//Create cards
 var cardsContainer = document.getElementById("cardsContainer");
 var createCard = function (offset) { return __awaiter(_this, void 0, void 0, function () {
     var response, data;
@@ -84,22 +83,59 @@ var createCard = function (offset) { return __awaiter(_this, void 0, void 0, fun
         }
     });
 }); };
-//Calculating the total pages
+//PAGINATION
 var offset = 0;
 var page = 1;
 var previousPage = document.getElementById("previousPage");
 var nextPage = document.getElementById("nextPage");
-var disableButtons = function () {
-    console.log(page);
-    if (page === 1) {
-        previousPage.disabled = true;
-        previousPage.style.backgroundColor = "grey";
-    }
-    else {
-        previousPage.disabled = false;
-        previousPage.style.backgroundColor = "#020202";
-    }
-};
+var firstPage = document.getElementById("firstPage");
+var lastPage = document.getElementById("lastPage");
+var disableButtons = function () { return __awaiter(_this, void 0, void 0, function () {
+    var totalPages;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                //Previous and first page buttons
+                if (page === 1) {
+                    previousPage.classList.remove('enabledButton');
+                    previousPage.classList.add('disabledButton');
+                    previousPage.disabled = true;
+                    firstPage.classList.remove('enabledButton');
+                    firstPage.classList.add('disabledButton');
+                    firstPage.disabled = true;
+                }
+                else {
+                    previousPage.classList.add('enabledButton');
+                    previousPage.classList.remove('disabledButton');
+                    previousPage.disabled = false;
+                    firstPage.classList.add('enabledButton');
+                    firstPage.classList.remove('disabledButton');
+                    firstPage.disabled = false;
+                }
+                return [4 /*yield*/, getPages()];
+            case 1:
+                totalPages = _a.sent();
+                if (page === totalPages) {
+                    nextPage.classList.remove('enabledButton');
+                    nextPage.classList.add('disabledButton');
+                    nextPage.disabled = true;
+                    lastPage.classList.remove('enabledButton');
+                    lastPage.classList.add('disabledButton');
+                    lastPage.disabled = true;
+                }
+                else {
+                    nextPage.classList.add('enabledButton');
+                    nextPage.classList.remove('disabledButton');
+                    nextPage.disabled = false;
+                    lastPage.classList.add('enabledButton');
+                    lastPage.classList.remove('disabledButton');
+                    lastPage.disabled = false;
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+//Calculating the total pages
 var getPages = function () { return __awaiter(_this, void 0, void 0, function () {
     var response, limit, total, totalPages;
     return __generator(this, function (_a) {
@@ -110,7 +146,6 @@ var getPages = function () { return __awaiter(_this, void 0, void 0, function ()
                 limit = response.data.limit;
                 total = response.data.total;
                 totalPages = total / limit;
-                console.log(totalPages);
                 if (totalPages % 1 !== 0) {
                     totalPages = Math.ceil(totalPages);
                 }
@@ -118,11 +153,23 @@ var getPages = function () { return __awaiter(_this, void 0, void 0, function ()
         }
     });
 }); };
+//Loading first page
 var initFirstPage = function () {
     createCard(offset);
-    previousPage.disabled = true;
-    previousPage.style.backgroundColor = "grey";
+    disableButtons();
 };
+//Previous page
+var goPreviousPage = function () {
+    page -= 1;
+    offset -= 20;
+    createCard(offset);
+};
+previousPage.addEventListener("click", function () {
+    if (page > 1) {
+        goPreviousPage();
+        disableButtons();
+    }
+});
 //Next page
 var goNextPage = function () {
     page += 1;
@@ -136,27 +183,58 @@ nextPage.addEventListener("click", function () { return __awaiter(_this, void 0,
             case 0: return [4 /*yield*/, getPages()];
             case 1:
                 totalPages = _a.sent();
-                if (page <= totalPages) {
-                    goNextPage();
-                }
-                else {
-                    nextPage.disabled = true;
-                }
+                if (!(page <= totalPages)) return [3 /*break*/, 3];
+                return [4 /*yield*/, goNextPage()];
+            case 2:
+                _a.sent();
                 disableButtons();
-                return [2 /*return*/];
+                _a.label = 3;
+            case 3: return [2 /*return*/];
         }
     });
 }); });
-//Previous page
-var goPreviousPage = function () {
-    page -= 1;
-    offset -= 20;
+//First page
+var goFirstPage = function () {
+    page = 1;
+    offset = 0;
     createCard(offset);
 };
-previousPage.addEventListener("click", function () {
+firstPage.addEventListener("click", function () {
     if (page > 1) {
-        goPreviousPage();
+        goFirstPage();
+        disableButtons();
     }
-    disableButtons();
 });
+//Last page
+var goLastPage = function () { return __awaiter(_this, void 0, void 0, function () {
+    var totalPages;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, getPages()];
+            case 1:
+                totalPages = _a.sent();
+                page = totalPages;
+                offset = (totalPages - 1) * 20;
+                createCard(offset);
+                return [2 /*return*/];
+        }
+    });
+}); };
+lastPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
+    var totalPages;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, getPages()];
+            case 1:
+                totalPages = _a.sent();
+                if (!(page <= totalPages)) return [3 /*break*/, 3];
+                return [4 /*yield*/, goLastPage()];
+            case 2:
+                _a.sent();
+                disableButtons();
+                _a.label = 3;
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
 initFirstPage();

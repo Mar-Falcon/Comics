@@ -5,7 +5,7 @@
     margin-bottom: $xxl-spacing;
     button{
         border: none;
-        i{
+        .enabledButton{
            font-size: 1.8rem;
            width: 2.7rem;
            height: 2.7rem;
@@ -13,9 +13,18 @@
            color: $secondary-color;
            padding-top: 0.5rem;
            margin: 0 $xs-spacing;
-        }
-        i:hover{
+           &:hover{
             background-color: $third-color;
+           }
+        }
+        .disabledButton{
+           font-size: 1.8rem;
+           width: 2.7rem;
+           height: 2.7rem;
+           background-color: grey;
+           color: $secondary-color;
+           padding-top: 0.5rem;
+           margin: 0 $xs-spacing;
         }
     }
 }
