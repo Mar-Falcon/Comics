@@ -8,9 +8,10 @@
 main{
     margin-right: $l-spacing;
     margin-left: $l-spacing;       
-    @media only screen and (min-width: 768px){        
+    @media only screen and (min-width: 768px){         
         display: flex;
-        flex-direction: column;        
-        align-items: center;
+        flex-direction: column;   
+        justify-content: center;     
+        align-items: center;        
     }
 }

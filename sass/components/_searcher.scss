@@ -1,43 +1,70 @@
 .searcherSection{
-    margin-top: $xl-spacing;  
-    width: 80vw;     
+    margin-top: $xl-spacing;     
+    width: 80vw;   
+    @media only screen and (min-width: 768px){
+        padding: 0 $s-spacing;
+    }
 }
 .searcher{
     margin-bottom: $l-spacing;
     margin-top: $l-spacing;
     border-bottom: 2px solid #151515;
     margin-right: $l-spacing;
+    align-items: center;
+    @media only screen and (min-width: 768px){
+        min-width: 50%;
+        flex-grow: 1;             
+    }     
     &__input{
         border: 0;
         font-size: 1.6rem;
-        margin-left: $xs-spacing; 
-       
+        margin-left: $xs-spacing;  
+        outline: none;
+        @media only screen and (min-width: 768px){           
+            font-size: 2rem;
+        }    
     }
 }
 .searcherSelectors{
     @extend .flexColumn;
+    @media only screen and (min-width: 768px){
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+    }
     .selectorContainer{
         margin-bottom: $l-spacing;
         display: flex;
         &__label{
-            @extend .secondaryTitles;           
+            @extend .secondaryTitles;   
+            @media only screen and (min-width: 768px){  
+                font-size: 1.2rem;
+            }
         }
         &__select{
             width:100px;
             border:0;
             font-weight: 600;
             margin-right: $l-spacing;
+            @media only screen and (min-width: 768px){
+                font-size: 1.2rem;
+            }
         }
     }    
     @media only screen and (min-width: 768px){
         display: flex;
         flex-direction: row;
         align-items: center;
+        &__label{
+            margin: 0;
+        }
     }
 }
 .searcherButton{
     display: flex;
-    justify-content: end;    
+    flex-direction: column;    
+    align-items: flex-end;  
     &__input{
         background-color: $primary-color;
         color: $secondary-color;
@@ -45,18 +72,30 @@
         padding: $s-spacing $m-spacing;
         font-size: 1.1rem;
         cursor: pointer;
+        @media only screen and (min-width: 768px){  
+            font-size: 1.2rem;
+        }
     }
     &__input:hover{
         background-color: $third-color;
        }
 }
-@media only screen and (min-width: 768px){
-    form {   
+form {   
+    width: 90vw;
+    @media only screen and (min-width: 768px){     
     width: 80vw; 
     display: flex;
     flex-direction: row;  
-    justify-content: space-between; 
-    align-items: center; 
-    flex-wrap: wrap;
-    }
+    justify-content: space-between;       
+    flex-wrap: wrap;  
+    }    
+}
+@media only screen and (min-width: 768px){   
+    .searcherActions{       
+        display: flex;
+        flex-direction: row;                      
+        align-items: center;        
+        padding-right: $l-spacing;         
+        flex-grow: 1;
+    }    
 }

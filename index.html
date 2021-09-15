@@ -23,34 +23,35 @@
                     <i class="fas fa-search"></i>
                     <input class="searcher__input" type="text" placeholder="Enter your search">
                 </div>
-                <div class="searcherSelectors">
-                    <div class="selectorContainer">
-                        <label for="type" class="selectorContainer__label">TYPE</label>
-                        <select name="type" id="type" class="selectorContainer__select">
-                            <option value="comics">COMICS</option>
-                            <option value="characters">CHARACTERS</option>
-                        </select>
+                <div class="searcherActions">
+                    <div class="searcherSelectors">
+                        <div class="selectorContainer">
+                            <label for="type" class="selectorContainer__label">TYPE</label>
+                            <select name="type" id="type" class="selectorContainer__select">
+                                <option value="comics">COMICS</option>
+                                <option value="characters">CHARACTERS</option>
+                            </select>
+                        </div>
+                        <div class="selectorContainer">
+                            <label for="orderBy" class="selectorContainer__label">ORDER BY</label>
+                            <select name="orderBy" id="orderBy" class="selectorContainer__select">
+                                <option value="a-z">A-Z</option>
+                                <option value="z-a">Z-A</option>
+                                <option value="moreRecent">MORE RECENT</option>
+                                <option value="lessRecent">LESS RECENT</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="selectorContainer">
-                        <label for="orderBy" class="selectorContainer__label">ORDER BY</label>
-                        <select name="orderBy" id="orderBy" class="selectorContainer__select">
-                            <option value="a-z">A-Z</option>
-                            <option value="z-a">Z-A</option>
-                            <option value="moreRecent">MORE RECENT</option>
-                            <option value="lessRecent">LESS RECENT</option>
-                        </select>
+                    <div class="searcherButton">
+                        <input type="submit" value="SEARCH" class="searcherButton__input">
                     </div>
-                </div>
-                <div class="searcherButton">
-                    <input type="submit" value="SEARCH" class="searcherButton__input">
                 </div>
             </form>
         </div>
-        <div class="cardsSection">
+        <div class="cardsSection">            
             <h2 class="cardsSection__h2">Results</h2>
-            <p class="cardsSection__p">0 RESULTS</p>
-            <div id="cardsContainer" class="cardsContainer">
-
+            <p class="cardsSection__p">0 RESULTS</p>          
+            <div id="cardsContainer" class="cardsContainer">            
             </div>
         </div>
         <div class="pagination">
