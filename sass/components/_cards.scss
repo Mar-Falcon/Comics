@@ -1,4 +1,4 @@
-.cardsSection{
+.cardsSection{      
     margin-top: $xl-spacing;
     &__h2{
         margin-bottom: $l-spacing;
@@ -6,9 +6,23 @@
     &__p{
         @extend .secondaryTitles;
         margin-bottom: $l-spacing;
+    }   
+    @media only screen and (min-width: 768px) {
+        display: flex; 
+        flex-direction: column;       
+        justify-content: start;
+        width: 80vw;     
+        &__h2{  
+            margin-left: $s-spacing;
+        }
+        &__p{
+            margin-left: $s-spacing;
+        }
     }
 }
 .card{
+    margin-bottom: $l-spacing;
+    cursor: pointer;
     &__img{
         width: $wide-cover;
         box-shadow: 0 26px 24px -16px rgba(0, 0, 0, 0.40);
@@ -19,14 +33,22 @@
         font-size: 0.9rem;
         margin-top: $l-spacing;
     }
+    @media only screen and (min-width: 768px){
+        width: calc(100% / 5 - 2 * 10px);
+        margin: 0 10px 40px;
+    }
 }
 .card:hover{
     transform: translateY(-10px);
     color: $third-color;
 }
 
-@media only screen and (min-width: 700px) {
-    .card{
-        width: 250px;
-    }
+@media only screen and (min-width: 768px) {
+    .cardsContainer{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: start;        
+        flex-wrap: wrap;
+    }    
 }
