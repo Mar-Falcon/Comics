@@ -108,6 +108,9 @@ var filters = function (offset) { return __awaiter(_this, void 0, void 0, functi
 }); };
 //CHANGE ORDER OPTIONS 
 selType.addEventListener('change', function () {
+    offset = 0;
+    page = 1;
+    initFirstPage();
     if (selType.value === "characters") {
         comicsOrderBy.classList.add('d-none');
         charactersOrderBy.classList.remove('d-none');

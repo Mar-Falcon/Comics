@@ -53,6 +53,9 @@ const filters = async (offset)=>{
 
 //CHANGE ORDER OPTIONS 
 selType.addEventListener('change', ()=>{
+    offset= 0;
+    page = 1;
+    initFirstPage();
     if(selType.value === "characters"){
         comicsOrderBy.classList.add('d-none')
         charactersOrderBy.classList.remove('d-none')
