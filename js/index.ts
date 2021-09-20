@@ -1,26 +1,23 @@
-const baseUrl = "http://gateway.marvel.com/";
-const apiKey ="3837d58127c2d8d73d7bda851100d507";
-const hash ="1fcfb0ff82123c45591cd5affb7b538f";
-
-//Comics request
-const getComics = async (offset) => {
-    const response = await fetch(`${baseUrl}v1/public/comics?ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`);
-    const data = await response.json();
-    return data;
-};
-
-//Create cards
 const cardsContainer = document.getElementById("cardsContainer");
-const createCard = async (offset) => {
+let offset = 0;
+
+//Cards
+const createCards = async (offset) => {
     cardsContainer.innerHTML = "";
-    const response = await getComics(offset);
+    let response = await filters(offset);
     const data = response.data.results;
+
     data.forEach(element => {
         const card = document.createElement("div");
         const img = document.createElement("img");
         const title = document.createElement("h3");
         img.setAttribute("src", `${element.thumbnail.path}.${element.thumbnail.extension}`);
-        const titleTxt = document.createTextNode(element.title);
+        let titleTxt;
+        if(selType.value === "comics"){     //<-- Comic title
+            titleTxt = document.createTextNode(element.title);
+        }else{                              //<-- Character name
+            titleTxt = document.createTextNode(element.name);
+        }
         img.classList.add("card__img");
         title.classList.add("card__h3");
         card.classList.add("card");
@@ -29,11 +26,18 @@ const createCard = async (offset) => {
         title.appendChild(titleTxt);
         card.appendChild(title);
         cardsContainer.appendChild(card);
+        // Event to enable get character id
+        if(selType.value === "characters"){
+            card.dataset.id = element.id;
+            card.addEventListener('click', (e)=>{
+                getCharacterData(e, offset);
+            })
+        }
     });
 }
 
-//PAGINATION
-let offset = 0;
+//Calculating the total pages
+
 let page = 1;
 const previousPage = (<HTMLButtonElement>document.getElementById("previousPage"));
 const nextPage = (<HTMLButtonElement>document.getElementById("nextPage"));
@@ -57,6 +61,7 @@ const disableButtons = async () => {
         firstPage.classList.remove('disabledButton');
         firstPage.disabled=false;
     }
+
     //Next and last page buttons
     const totalPages = await getPages();
     if(page === totalPages){
@@ -74,51 +79,50 @@ const disableButtons = async () => {
         lastPage.classList.remove('disabledButton');
         lastPage.disabled=false;
     }
+}
 
-}   
-
-//Calculating the total pages
 const getPages = async () =>{
-    const response = await getComics(offset);
+    const response = await filters(offset);
     const limit = response.data.limit;
     const total = response.data.total;
     let totalPages = total / limit;
     if(totalPages%1 !== 0){
         totalPages = Math.ceil(totalPages);
     }
-
     return totalPages;
 }
 
-//Loading first page
+//Init
 const initFirstPage = () =>{
-    createCard(offset);
+    createCards(offset);
     disableButtons();
 }
+
+//Next page
+const goNextPage = () =>{
+    page += 1;
+    offset += 20;
+    createCards(offset);  
+}
+
+nextPage.addEventListener("click", async () =>{
+    const totalPages = await getPages();
+    if(page <= totalPages){
+        await goNextPage();
+        disableButtons();
+    }
+});
 
 //Previous page
 const goPreviousPage = ()=>{
     page -= 1;
     offset -= 20;
-    createCard(offset);  
+    createCards(offset);  
 }
-previousPage.addEventListener("click", () => {
+
+previousPage.addEventListener("click", () =>{
     if(page > 1){
         goPreviousPage();
-        disableButtons();
-    }
-});
-
-//Next page
-const goNextPage = ()=>{
-    page += 1;
-    offset += 20;
-    createCard(offset);  
-}
-nextPage.addEventListener("click", async () => {
-    const totalPages = await getPages();
-    if(page <= totalPages){
-        await goNextPage();
         disableButtons();
     }
 });
@@ -127,7 +131,7 @@ nextPage.addEventListener("click", async () => {
 const goFirstPage = () => {
     page = 1;
     offset = 0;
-    createCard(offset);  
+    createCards(offset);  
 }
 firstPage.addEventListener("click", () => {
     if(page > 1){
@@ -141,7 +145,7 @@ const goLastPage = async () => {
     const totalPages = await getPages();
     page = totalPages;
     offset = (totalPages-1)*20;
-    createCard(offset);  
+    createCards(offset);  
 }
 lastPage.addEventListener("click", async () => {
     const totalPages = await getPages();
@@ -153,5 +157,7 @@ lastPage.addEventListener("click", async () => {
 
 initFirstPage();
 
-
-
+const searcherButton = document.getElementById("searcherButton");
+searcherButton.addEventListener('click', () =>{
+    createCards(offset);
+})
