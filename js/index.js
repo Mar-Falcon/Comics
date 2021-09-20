@@ -35,33 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
-var baseUrl = "http://gateway.marvel.com/";
-var apiKey = "3837d58127c2d8d73d7bda851100d507";
-var hash = "1fcfb0ff82123c45591cd5affb7b538f";
-//Comics request
-var getComics = function (offset) { return __awaiter(_this, void 0, void 0, function () {
-    var response, data;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, fetch(baseUrl + "v1/public/comics?ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset)];
-            case 1:
-                response = _a.sent();
-                return [4 /*yield*/, response.json()];
-            case 2:
-                data = _a.sent();
-                return [2 /*return*/, data];
-        }
-    });
-}); };
-//Create cards
 var cardsContainer = document.getElementById("cardsContainer");
-var createCard = function (offset) { return __awaiter(_this, void 0, void 0, function () {
+var offset = 0;
+//Cards
+var createCards = function (offset) { return __awaiter(_this, void 0, void 0, function () {
     var response, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 cardsContainer.innerHTML = "";
-                return [4 /*yield*/, getComics(offset)];
+                return [4 /*yield*/, filters(offset)];
             case 1:
                 response = _a.sent();
                 data = response.data.results;
@@ -70,7 +53,13 @@ var createCard = function (offset) { return __awaiter(_this, void 0, void 0, fun
                     var img = document.createElement("img");
                     var title = document.createElement("h3");
                     img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
-                    var titleTxt = document.createTextNode(element.title);
+                    var titleTxt;
+                    if (selType.value === "comics") { //<-- Comic title
+                        titleTxt = document.createTextNode(element.title);
+                    }
+                    else { //<-- Character name
+                        titleTxt = document.createTextNode(element.name);
+                    }
                     img.classList.add("card__img");
                     title.classList.add("card__h3");
                     card.classList.add("card");
@@ -78,13 +67,19 @@ var createCard = function (offset) { return __awaiter(_this, void 0, void 0, fun
                     title.appendChild(titleTxt);
                     card.appendChild(title);
                     cardsContainer.appendChild(card);
+                    // Event to enable get character id
+                    if (selType.value === "characters") {
+                        card.dataset.id = element.id;
+                        card.addEventListener('click', function (e) {
+                            getCharacterData(e, offset);
+                        });
+                    }
                 });
                 return [2 /*return*/];
         }
     });
 }); };
-//PAGINATION
-var offset = 0;
+//Calculating the total pages
 var page = 1;
 var previousPage = document.getElementById("previousPage");
 var nextPage = document.getElementById("nextPage");
@@ -135,12 +130,11 @@ var disableButtons = function () { return __awaiter(_this, void 0, void 0, funct
         }
     });
 }); };
-//Calculating the total pages
 var getPages = function () { return __awaiter(_this, void 0, void 0, function () {
     var response, limit, total, totalPages;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, getComics(offset)];
+            case 0: return [4 /*yield*/, filters(offset)];
             case 1:
                 response = _a.sent();
                 limit = response.data.limit;
@@ -153,28 +147,16 @@ var getPages = function () { return __awaiter(_this, void 0, void 0, function ()
         }
     });
 }); };
-//Loading first page
+//Init
 var initFirstPage = function () {
-    createCard(offset);
+    createCards(offset);
     disableButtons();
 };
-//Previous page
-var goPreviousPage = function () {
-    page -= 1;
-    offset -= 20;
-    createCard(offset);
-};
-previousPage.addEventListener("click", function () {
-    if (page > 1) {
-        goPreviousPage();
-        disableButtons();
-    }
-});
 //Next page
 var goNextPage = function () {
     page += 1;
     offset += 20;
-    createCard(offset);
+    createCards(offset);
 };
 nextPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
     var totalPages;
@@ -193,11 +175,23 @@ nextPage.addEventListener("click", function () { return __awaiter(_this, void 0,
         }
     });
 }); });
+//Previous page
+var goPreviousPage = function () {
+    page -= 1;
+    offset -= 20;
+    createCards(offset);
+};
+previousPage.addEventListener("click", function () {
+    if (page > 1) {
+        goPreviousPage();
+        disableButtons();
+    }
+});
 //First page
 var goFirstPage = function () {
     page = 1;
     offset = 0;
-    createCard(offset);
+    createCards(offset);
 };
 firstPage.addEventListener("click", function () {
     if (page > 1) {
@@ -215,7 +209,7 @@ var goLastPage = function () { return __awaiter(_this, void 0, void 0, function 
                 totalPages = _a.sent();
                 page = totalPages;
                 offset = (totalPages - 1) * 20;
-                createCard(offset);
+                createCards(offset);
                 return [2 /*return*/];
         }
     });
@@ -238,3 +232,7 @@ lastPage.addEventListener("click", function () { return __awaiter(_this, void 0,
     });
 }); });
 initFirstPage();
+var searcherButton = document.getElementById("searcherButton");
+searcherButton.addEventListener('click', function () {
+    createCards(offset);
+});

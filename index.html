@@ -18,10 +18,10 @@
     <main>
         <div class="searcherSection">
             <h2>Search</h2>
-            <form>
+            <div class="searcherContainer">
                 <div class="searcher">
                     <i class="fas fa-search"></i>
-                    <input class="searcher__input" type="text" placeholder="Enter your search">
+                    <input class="searcher__input" id ="searcher" type="text" placeholder="Enter your search">
                 </div>
                 <div class="searcherActions">
                     <div class="searcherSelectors">
@@ -34,19 +34,23 @@
                         </div>
                         <div class="selectorContainer">
                             <label for="orderBy" class="selectorContainer__label">ORDER BY</label>
-                            <select name="orderBy" id="orderBy" class="selectorContainer__select">
-                                <option value="a-z">A-Z</option>
-                                <option value="z-a">Z-A</option>
-                                <option value="moreRecent">MORE RECENT</option>
-                                <option value="lessRecent">LESS RECENT</option>
+                            <select name="orderBy" id="comicsOrderBy" class="selectorContainer__select">
+                                <option value="title">A-Z</option>
+                                <option value="-title">Z-A</option>
+                                <option value="-focDate">MORE RECENT</option>
+                                <option value="focDate">LESS RECENT</option>
+                            </select>
+                            <select name="orderBy" id="charactersOrderBy" class="selectorContainer__select d-none">
+                                <option value="name">A-Z</option>
+                                <option value="-name">Z-A</option>
                             </select>
                         </div>
                     </div>
                     <div class="searcherButton">
-                        <input type="submit" value="SEARCH" class="searcherButton__input">
+                        <button id="searcherButton" value="SEARCH" class="searcherButton__input">
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
         <div class="cardsSection">            
             <h2 class="cardsSection__h2">Results</h2>
@@ -75,6 +79,8 @@
         <div>Made with ❤️ by Mar, Maia y Mack</div>
     </footer>
 
+    <script src="./js/comics.js"></script>
     <script src="./js/index.js"></script>
+
 </body>
 </html>
