@@ -38,13 +38,13 @@ var _this = this;
 var cardsContainer = document.getElementById("cardsContainer");
 var offset = 0;
 //Cards
-var createCards = function (offset) { return __awaiter(_this, void 0, void 0, function () {
+var createCards = function (offset, expectedfunction) { return __awaiter(_this, void 0, void 0, function () {
     var response, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 cardsContainer.innerHTML = "";
-                return [4 /*yield*/, filters(offset)];
+                return [4 /*yield*/, expectedfunction];
             case 1:
                 response = _a.sent();
                 data = response.data.results;
@@ -63,17 +63,13 @@ var createCards = function (offset) { return __awaiter(_this, void 0, void 0, fu
                     img.classList.add("card__img");
                     title.classList.add("card__h3");
                     card.classList.add("card");
+                    card.dataset.id = element.id;
+                    img.dataset.id = element.id;
+                    title.dataset.id = element.id;
                     card.appendChild(img);
                     title.appendChild(titleTxt);
                     card.appendChild(title);
                     cardsContainer.appendChild(card);
-                    // Event to enable get character id
-                    if (selType.value === "characters") {
-                        card.dataset.id = element.id;
-                        card.addEventListener('click', function (e) {
-                            getCharacterData(e, offset);
-                        });
-                    }
                 });
                 return [2 /*return*/];
         }
@@ -149,14 +145,14 @@ var getPages = function () { return __awaiter(_this, void 0, void 0, function ()
 }); };
 //Init
 var initFirstPage = function () {
-    createCards(offset);
+    createCards(offset, filters(offset));
     disableButtons();
 };
 //Next page
 var goNextPage = function () {
     page += 1;
     offset += 20;
-    createCards(offset);
+    createCards(offset, filters(offset));
 };
 nextPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
     var totalPages;
@@ -179,7 +175,7 @@ nextPage.addEventListener("click", function () { return __awaiter(_this, void 0,
 var goPreviousPage = function () {
     page -= 1;
     offset -= 20;
-    createCards(offset);
+    createCards(offset, filters(offset));
 };
 previousPage.addEventListener("click", function () {
     if (page > 1) {
@@ -191,7 +187,7 @@ previousPage.addEventListener("click", function () {
 var goFirstPage = function () {
     page = 1;
     offset = 0;
-    createCards(offset);
+    createCards(offset, filters(offset));
 };
 firstPage.addEventListener("click", function () {
     if (page > 1) {
@@ -209,7 +205,7 @@ var goLastPage = function () { return __awaiter(_this, void 0, void 0, function 
                 totalPages = _a.sent();
                 page = totalPages;
                 offset = (totalPages - 1) * 20;
-                createCards(offset);
+                createCards(offset, filters(offset));
                 return [2 /*return*/];
         }
     });
@@ -234,5 +230,7 @@ lastPage.addEventListener("click", function () { return __awaiter(_this, void 0,
 initFirstPage();
 var searcherButton = document.getElementById("searcherButton");
 searcherButton.addEventListener('click', function () {
-    createCards(offset);
+    cardsSectionSubTitle.innerHTML = "Results";
+    cardInfo.innerHTML = "";
+    createCards(offset, filters(offset));
 });

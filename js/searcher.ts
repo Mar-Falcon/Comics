@@ -65,20 +65,3 @@ selType.addEventListener('change', ()=>{
     }
 })
 
-
-
-//CHARACTER SECTION
-const createCharacterSection = (dataComics) => {
-    console.log(dataComics)
-    cardsContainer.innerHTML = "";
-    console.log("CREAR SECCION PERSONAJE")
-}
-
-//CHARACTER DATA
-const getCharacterData = async(e, offset) => {
-    const characterId = e.target.parentElement.dataset.id;
-    const methodCharacterIdComics = `/v1/public/characters/${characterId}/comics?`;
-    let queryParams = `ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`;
-    const comicsResponse = await getData(offset,  methodCharacterIdComics, queryParams);
-    createCharacterSection(comicsResponse);
-}
