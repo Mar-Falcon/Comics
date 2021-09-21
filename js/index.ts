@@ -2,9 +2,9 @@ const cardsContainer = document.getElementById("cardsContainer");
 let offset = 0;
 
 //Cards
-const createCards = async (offset) => {
+const createCards = async (offset, expectedfunction) => {
     cardsContainer.innerHTML = "";
-    let response = await filters(offset);
+    let response = await expectedfunction;
     const data = response.data.results;
 
     data.forEach(element => {
@@ -22,17 +22,14 @@ const createCards = async (offset) => {
         title.classList.add("card__h3");
         card.classList.add("card");
 
+        card.dataset.id = element.id;
+        img.dataset.id = element.id;
+        title.dataset.id = element.id;
+
         card.appendChild(img);
         title.appendChild(titleTxt);
         card.appendChild(title);
         cardsContainer.appendChild(card);
-        // Event to enable get character id
-        if(selType.value === "characters"){
-            card.dataset.id = element.id;
-            card.addEventListener('click', (e)=>{
-                getCharacterData(e, offset);
-            })
-        }
     });
 }
 
@@ -94,7 +91,7 @@ const getPages = async () =>{
 
 //Init
 const initFirstPage = () =>{
-    createCards(offset);
+    createCards(offset, filters(offset));
     disableButtons();
 }
 
@@ -102,7 +99,7 @@ const initFirstPage = () =>{
 const goNextPage = () =>{
     page += 1;
     offset += 20;
-    createCards(offset);  
+    createCards(offset, filters(offset));  
 }
 
 nextPage.addEventListener("click", async () =>{
@@ -117,7 +114,7 @@ nextPage.addEventListener("click", async () =>{
 const goPreviousPage = ()=>{
     page -= 1;
     offset -= 20;
-    createCards(offset);  
+    createCards(offset, filters(offset));  
 }
 
 previousPage.addEventListener("click", () =>{
@@ -131,7 +128,7 @@ previousPage.addEventListener("click", () =>{
 const goFirstPage = () => {
     page = 1;
     offset = 0;
-    createCards(offset);  
+    createCards(offset, filters(offset));  
 }
 firstPage.addEventListener("click", () => {
     if(page > 1){
@@ -145,7 +142,7 @@ const goLastPage = async () => {
     const totalPages = await getPages();
     page = totalPages;
     offset = (totalPages-1)*20;
-    createCards(offset);  
+    createCards(offset, filters(offset));  
 }
 lastPage.addEventListener("click", async () => {
     const totalPages = await getPages();
@@ -159,5 +156,7 @@ initFirstPage();
 
 const searcherButton = document.getElementById("searcherButton");
 searcherButton.addEventListener('click', () =>{
-    createCards(offset);
+    cardsSectionSubTitle.innerHTML = "Results";
+    cardInfo.innerHTML="";
+    createCards(offset, filters(offset));
 })

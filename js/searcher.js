@@ -120,26 +120,3 @@ selType.addEventListener('change', function () {
         charactersOrderBy.classList.add('d-none');
     }
 });
-//CHARACTER SECTION
-var createCharacterSection = function (dataComics) {
-    console.log(dataComics);
-    cardsContainer.innerHTML = "";
-    console.log("CREAR SECCION PERSONAJE");
-};
-//CHARACTER DATA
-var getCharacterData = function (e, offset) { return __awaiter(_this, void 0, void 0, function () {
-    var characterId, methodCharacterIdComics, queryParams, comicsResponse;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                characterId = e.target.parentElement.dataset.id;
-                methodCharacterIdComics = "/v1/public/characters/" + characterId + "/comics?";
-                queryParams = "ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset;
-                return [4 /*yield*/, getData(offset, methodCharacterIdComics, queryParams)];
-            case 1:
-                comicsResponse = _a.sent();
-                createCharacterSection(comicsResponse);
-                return [2 /*return*/];
-        }
-    });
-}); };
