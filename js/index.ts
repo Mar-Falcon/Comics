@@ -11,15 +11,19 @@ const createCards = async (offset, expectedfunction) => {
         const card = document.createElement("div");
         const img = document.createElement("img");
         const title = document.createElement("h3");
+        
         img.setAttribute("src", `${element.thumbnail.path}.${element.thumbnail.extension}`);
         let titleTxt;
         if(selType.value === "comics"){     //<-- Comic title
-            titleTxt = document.createTextNode(element.title);
+            titleTxt = document.createTextNode(element.title || element.name);
+            
         }else{                              //<-- Character name
-            titleTxt = document.createTextNode(element.name);
+            titleTxt = document.createTextNode(element.name || element.title);
+           
         }
         img.classList.add("card__img");
         title.classList.add("card__h3");
+        
         card.classList.add("card");
 
         card.dataset.id = element.id;
@@ -28,6 +32,7 @@ const createCards = async (offset, expectedfunction) => {
 
         card.appendChild(img);
         title.appendChild(titleTxt);
+        
         card.appendChild(title);
         cardsContainer.appendChild(card);
     });
