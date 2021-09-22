@@ -55,10 +55,10 @@ var createCards = function (offset, expectedfunction) { return __awaiter(_this, 
                     img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
                     var titleTxt;
                     if (selType.value === "comics") { //<-- Comic title
-                        titleTxt = document.createTextNode(element.title);
+                        titleTxt = document.createTextNode(element.title || element.name);
                     }
                     else { //<-- Character name
-                        titleTxt = document.createTextNode(element.name);
+                        titleTxt = document.createTextNode(element.name || element.title);
                     }
                     img.classList.add("card__img");
                     title.classList.add("card__h3");
