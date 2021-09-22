@@ -6,26 +6,20 @@ const createCards = async (offset, expectedfunction) => {
     cardsContainer.innerHTML = "";
     let response = await expectedfunction;
     const data = response.data.results;
-
     data.forEach(element => {
         const card = document.createElement("div");
         const img = document.createElement("img");
-        const title = document.createElement("h3");
-        
+        const title = document.createElement("h3");        
         img.setAttribute("src", `${element.thumbnail.path}.${element.thumbnail.extension}`);
         let titleTxt;
         if(selType.value === "comics"){     //<-- Comic title
-            titleTxt = document.createTextNode(element.title || element.name);
-            
+            titleTxt = document.createTextNode(element.title || element.name);            
         }else{                              //<-- Character name
-            titleTxt = document.createTextNode(element.name || element.title);
-           
+            titleTxt = document.createTextNode(element.name || element.title);           
         }
         img.classList.add("card__img");
-        title.classList.add("card__h3");
-        
+        title.classList.add("card__h3");        
         card.classList.add("card");
-
         card.dataset.id = element.id;
         img.dataset.id = element.id;
         title.dataset.id = element.id;

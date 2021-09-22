@@ -24,16 +24,72 @@ const createComicInfo = (element) => {
     const img = document.createElement("img");
     const info = document.createElement("div");
     const title = document.createElement("h2");
-    const published = document.createElement("h1");
+    const publishedTitle = document.createElement("h3");
+    const writerTitle = document.createElement("h3");
+    const descriptionTitle = document.createElement("h3");
+    const published = document.createElement("p");
+    const writer = document.createElement("p");
+    const description = document.createElement("p");
     img.setAttribute("src", `${element.thumbnail.path}.${element.thumbnail.extension}`);
     img.classList.add("cardInfo__img");
+    publishedTitle.classList.add("cardInfo__title");
     title.classList.add("cardInfo__title");
+    writerTitle.classList.add("cardInfo__title");
+    descriptionTitle.classList.add("cardInfo__title");
+    published.classList.add("cardInfo__p");
+    writer.classList.add("cardInfo__p");
+    description.classList.add("cardInfo__p");
     const titleTxt = document.createTextNode(element.title);
+   
     title.appendChild(titleTxt);
     cardInfo.appendChild(img);
     info.appendChild(title);
+    
+    const publishedTitleTxt = document.createTextNode("Published:");    
+    publishedTitle.appendChild(publishedTitleTxt);
+    info.appendChild(publishedTitle);
+
+    //const date = element.dates[0].date;
+
+    const formatDate = (dates) =>{
+        let getDate = dates.date; 
+        return "  " + getDate;
+    }
+    const dateData = element.dates.map(formatDate);
+    
+    const publishedTxt = document.createTextNode(dateData);    
+    published.appendChild(publishedTxt);
+    info.appendChild(published);
+
+    const writerTitleTxt = document.createTextNode("Writers:");    
+    writerTitle.appendChild(writerTitleTxt);
+    info.appendChild(writerTitle);
+
+    const formatName = (items) =>{
+        return " " + items.name;
+    }
+    const writerData = element.creators.items.map(formatName);    
+    console.log(element.creators.items[0]);
+    const writerTxt = document.createTextNode(writerData);    
+    writer.appendChild(writerTxt);
+    info.appendChild(writer);
+
+    const descriptionTitleTxt = document.createTextNode("Description:");    
+    descriptionTitle.appendChild(descriptionTitleTxt);
+    info.appendChild(descriptionTitle);
+
+    const descriptionTxt = document.createTextNode(element.description || "");    
+    description.appendChild(descriptionTxt);
+    info.appendChild(description);
+
     cardInfo.appendChild(info);
 }
+
+const updateResultsCount = (count) => {
+    const cardsSectionResultados = document.getElementById('cardsSectionResults');
+    cardsSectionResultados.innerHTML = count;
+    
+  }
 
 const getCardData = async (e) => {
     const card = e.target;
