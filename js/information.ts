@@ -39,57 +39,44 @@ const createComicInfo = (element) => {
     published.classList.add("cardInfo__p");
     writer.classList.add("cardInfo__p");
     description.classList.add("cardInfo__p");
-    const titleTxt = document.createTextNode(element.title);
-   
+    const titleTxt = document.createTextNode(element.title);   
     title.appendChild(titleTxt);
     cardInfo.appendChild(img);
     info.appendChild(title);
-    
+    //Info Published
     const publishedTitleTxt = document.createTextNode("Published:");    
     publishedTitle.appendChild(publishedTitleTxt);
-    info.appendChild(publishedTitle);
-
-    //const date = element.dates[0].date;
-
-    const formatDate = (dates) =>{
-        let getDate = dates.date; 
-        return "  " + getDate;
-    }
-    const dateData = element.dates.map(formatDate);
-    
+    info.appendChild(publishedTitle);    
+    const convertDateFormat = (dates) => {
+        const releaseDate = new Intl.DateTimeFormat('es-AR').format(new Date(dates.date));                
+        return `  ${releaseDate}`;
+    }  
+    const dateData = element.dates.map(convertDateFormat);      
     const publishedTxt = document.createTextNode(dateData);    
     published.appendChild(publishedTxt);
     info.appendChild(published);
-
+    //Info Writers
     const writerTitleTxt = document.createTextNode("Writers:");    
     writerTitle.appendChild(writerTitleTxt);
     info.appendChild(writerTitle);
-
     const formatName = (items) =>{
-        return " " + items.name;
+        return `   ${items.name}`;
     }
     const writerData = element.creators.items.map(formatName);    
     console.log(element.creators.items[0]);
     const writerTxt = document.createTextNode(writerData);    
     writer.appendChild(writerTxt);
     info.appendChild(writer);
-
+    //Info Description
     const descriptionTitleTxt = document.createTextNode("Description:");    
     descriptionTitle.appendChild(descriptionTitleTxt);
     info.appendChild(descriptionTitle);
-
     const descriptionTxt = document.createTextNode(element.description || "");    
     description.appendChild(descriptionTxt);
     info.appendChild(description);
 
     cardInfo.appendChild(info);
 }
-
-const updateResultsCount = (count) => {
-    const cardsSectionResultados = document.getElementById('cardsSectionResults');
-    cardsSectionResultados.innerHTML = count;
-    
-  }
 
 const getCardData = async (e) => {
     const card = e.target;

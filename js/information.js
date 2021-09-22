@@ -79,29 +79,31 @@ var createComicInfo = function (element) {
     title.appendChild(titleTxt);
     cardInfo.appendChild(img);
     info.appendChild(title);
+    //Info Published
     var publishedTitleTxt = document.createTextNode("Published:");
     publishedTitle.appendChild(publishedTitleTxt);
     info.appendChild(publishedTitle);
-    //const date = element.dates[0].date;
-    var formatDate = function (dates) {
-        var getDate = dates.date;
-        return "  " + getDate;
+    var convertDateFormat = function (dates) {
+        var releaseDate = new Intl.DateTimeFormat('es-AR').format(new Date(dates.date));
+        return "  " + releaseDate;
     };
-    var dateData = element.dates.map(formatDate);
+    var dateData = element.dates.map(convertDateFormat);
     var publishedTxt = document.createTextNode(dateData);
     published.appendChild(publishedTxt);
     info.appendChild(published);
+    //Info Writers
     var writerTitleTxt = document.createTextNode("Writers:");
     writerTitle.appendChild(writerTitleTxt);
     info.appendChild(writerTitle);
     var formatName = function (items) {
-        return " " + items.name;
+        return "   " + items.name;
     };
     var writerData = element.creators.items.map(formatName);
     console.log(element.creators.items[0]);
     var writerTxt = document.createTextNode(writerData);
     writer.appendChild(writerTxt);
     info.appendChild(writer);
+    //Info Description
     var descriptionTitleTxt = document.createTextNode("Description:");
     descriptionTitle.appendChild(descriptionTitleTxt);
     info.appendChild(descriptionTitle);
@@ -109,10 +111,6 @@ var createComicInfo = function (element) {
     description.appendChild(descriptionTxt);
     info.appendChild(description);
     cardInfo.appendChild(info);
-};
-var updateResultsCount = function (count) {
-    var cardsSectionResultados = document.getElementById('cardsSectionResults');
-    cardsSectionResultados.innerHTML = count;
 };
 var getCardData = function (e) { return __awaiter(_this, void 0, void 0, function () {
     var card, characterId, queryParams, methodComicId, methodComicIdCharacters, comicResponse, dataComic, charactersResponse, methodCharacterId, methodCharacterIdComics, characterResponse, dataCharacter, comicsResponse;
