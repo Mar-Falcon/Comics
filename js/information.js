@@ -60,14 +60,56 @@ var createComicInfo = function (element) {
     var img = document.createElement("img");
     var info = document.createElement("div");
     var title = document.createElement("h2");
-    var published = document.createElement("h1");
+    var publishedTitle = document.createElement("h3");
+    var writerTitle = document.createElement("h3");
+    var descriptionTitle = document.createElement("h3");
+    var published = document.createElement("p");
+    var writer = document.createElement("p");
+    var description = document.createElement("p");
     img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
     img.classList.add("cardInfo__img");
+    publishedTitle.classList.add("cardInfo__title");
     title.classList.add("cardInfo__title");
+    writerTitle.classList.add("cardInfo__title");
+    descriptionTitle.classList.add("cardInfo__title");
+    published.classList.add("cardInfo__p");
+    writer.classList.add("cardInfo__p");
+    description.classList.add("cardInfo__p");
     var titleTxt = document.createTextNode(element.title);
     title.appendChild(titleTxt);
     cardInfo.appendChild(img);
     info.appendChild(title);
+    //Info Published
+    var publishedTitleTxt = document.createTextNode("Published:");
+    publishedTitle.appendChild(publishedTitleTxt);
+    info.appendChild(publishedTitle);
+    var convertDateFormat = function (dates) {
+        var releaseDate = new Intl.DateTimeFormat('es-AR').format(new Date(dates.date));
+        return "  " + releaseDate;
+    };
+    var dateData = element.dates.map(convertDateFormat);
+    var publishedTxt = document.createTextNode(dateData);
+    published.appendChild(publishedTxt);
+    info.appendChild(published);
+    //Info Writers
+    var writerTitleTxt = document.createTextNode("Writers:");
+    writerTitle.appendChild(writerTitleTxt);
+    info.appendChild(writerTitle);
+    var formatName = function (items) {
+        return "   " + items.name;
+    };
+    var writerData = element.creators.items.map(formatName);
+    console.log(element.creators.items[0]);
+    var writerTxt = document.createTextNode(writerData);
+    writer.appendChild(writerTxt);
+    info.appendChild(writer);
+    //Info Description
+    var descriptionTitleTxt = document.createTextNode("Description:");
+    descriptionTitle.appendChild(descriptionTitleTxt);
+    info.appendChild(descriptionTitle);
+    var descriptionTxt = document.createTextNode(element.description || "");
+    description.appendChild(descriptionTxt);
+    info.appendChild(description);
     cardInfo.appendChild(info);
 };
 var getCardData = function (e) { return __awaiter(_this, void 0, void 0, function () {
