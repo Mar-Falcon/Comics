@@ -1,11 +1,18 @@
 const cardsContainer = document.getElementById("cardsContainer");
 let offset = 0;
 
+const updateResultsCount = (count) => {     
+    const cardsSectionResultados = document.getElementById("cardsSectionResults");
+    cardsSectionResultados.innerHTML = `${count} RESULTADOS`;          
+}
+
 //Cards
 const createCards = async (offset, expectedfunction) => {
     cardsContainer.innerHTML = "";
-    let response = await expectedfunction;
-    const data = response.data.results;
+    let response = await expectedfunction;    
+    let total = response.data.total;
+    updateResultsCount(total);
+    const data = response.data.results;   
     data.forEach(element => {
         const card = document.createElement("div");
         const img = document.createElement("img");
@@ -28,8 +35,8 @@ const createCards = async (offset, expectedfunction) => {
         title.appendChild(titleTxt);
         
         card.appendChild(title);
-        cardsContainer.appendChild(card);
-    });
+        cardsContainer.appendChild(card);        
+    });      
 }
 
 //Calculating the total pages
@@ -158,4 +165,5 @@ searcherButton.addEventListener('click', () =>{
     cardsSectionSubTitle.innerHTML = "Results";
     cardInfo.innerHTML="";
     createCards(offset, filters(offset));
+    updateResultsCount(0);
 })

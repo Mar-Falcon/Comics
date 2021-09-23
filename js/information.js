@@ -119,6 +119,7 @@ var createComicInfo = function (element) {
     description.appendChild(descriptionTxt);
     info.appendChild(description);
     cardInfo.appendChild(info);
+    updateResultsCount(0);
 };
 var cardsRelated = function (response) {
     if (response.data.total === 0) {
