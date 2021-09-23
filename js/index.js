@@ -37,11 +37,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 var cardsContainer = document.getElementById("cardsContainer");
 var offset = 0;
+
 var page = 1;
 var cardId = "all";
+
+var updateResultsCount = function (count) {
+    var cardsSectionResultados = document.getElementById("cardsSectionResults");
+    cardsSectionResultados.innerHTML = count + " RESULTADOS";
+};
+
 //Cards
 var createCards = function (offset, expectedfunction) { return __awaiter(_this, void 0, void 0, function () {
-    var response, data;
+    var response, total, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -49,6 +56,8 @@ var createCards = function (offset, expectedfunction) { return __awaiter(_this, 
                 return [4 /*yield*/, expectedfunction];
             case 1:
                 response = _a.sent();
+                total = response.data.total;
+                updateResultsCount(total);
                 data = response.data.results;
                 data.forEach(function (element) {
                     var card = document.createElement("div");
@@ -283,4 +292,5 @@ searcherButton.addEventListener('click', function () {
     cardsSectionSubTitle.innerHTML = "Results";
     cardInfo.innerHTML = "";
     createCards(offset, filters(offset));
+    updateResultsCount(0);
 });

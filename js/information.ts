@@ -49,21 +49,28 @@ const createComicInfo = (element) => {
     publishedTitle.appendChild(publishedTitleTxt);
     info.appendChild(publishedTitle);    
     const convertDateFormat = (dates) => {
-        const releaseDate = new Intl.DateTimeFormat('es-AR').format(new Date(dates.date));                
+        let releaseDate = "";
+        if (dates.type === 'onsaleDate'){
+        releaseDate = new Intl.DateTimeFormat('es-AR').format(new Date(dates.date))};                
         return `  ${releaseDate}`;
     }  
-    const dateData = element.dates.map(convertDateFormat);      
+    const dateData = element.dates.map(convertDateFormat).join("");      
     const publishedTxt = document.createTextNode(dateData);    
     published.appendChild(publishedTxt);
     info.appendChild(published);
-    //Info Writers
+    //Info Writers 
     const writerTitleTxt = document.createTextNode("Writers:");    
     writerTitle.appendChild(writerTitleTxt);
     info.appendChild(writerTitle);
-    const formatName = (items) =>{
-        return `   ${items.name}`;
+    const formatName = (items) =>{        
+        let writer = "";
+        if (items.role === 'writer'){            
+            writer = items.name;            
+        }        
+        return writer;
     }
-    const writerData = element.creators.items.map(formatName);    
+    const writerData = element.creators.items.map(formatName).join("");    
+    console.log(element.creators.items[0]);    
     const writerTxt = document.createTextNode(writerData);    
     writer.appendChild(writerTxt);
     info.appendChild(writer);
@@ -76,8 +83,8 @@ const createComicInfo = (element) => {
     info.appendChild(description);
 
     cardInfo.appendChild(info);
+    updateResultsCount(0);
 }
-
 const cardsRelated = (response) => {
     if(response.data.total === 0){
         const notResults = document.createElement('h2');
@@ -89,8 +96,10 @@ const cardsRelated = (response) => {
     }
 }
 
+
 const callInfoMethods = async(offset) => {
     cardsResponse = "";
+
     let queryParams = `ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`;
     if(selType.value === "comics"){
         const methodComicId = `/v1/public/comics/${cardId}?`;
