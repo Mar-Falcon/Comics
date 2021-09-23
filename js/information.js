@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 var cardsSectionSubTitle = document.getElementById('cardsSectionSubTitle');
 var cardInfo = document.getElementById('cardInfo');
+var cardsResponse;
 var createCharacterInfo = function (element) {
     cardInfo.innerHTML = "";
     var img = document.createElement("img");
@@ -132,46 +133,55 @@ var cardsRelated = function (response) {
         createCards(offset, response);
     }
 };
-var getCardData = function (e) { return __awaiter(_this, void 0, void 0, function () {
-    var card, characterId, queryParams, methodComicId, methodComicIdCharacters, comicResponse, dataComic, charactersResponse, methodCharacterId, methodCharacterIdComics, characterResponse, dataCharacter, comicsResponse;
+var callInfoMethods = function (offset) { return __awaiter(_this, void 0, void 0, function () {
+    var queryParams, methodComicId, methodComicIdCharacters, comicResponse, dataComic, methodCharacterId, methodCharacterIdComics, characterResponse, dataCharacter;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                card = e.target;
-                characterId = card.getAttribute('data-id');
+                cardsResponse = "";
                 queryParams = "ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset;
                 if (!(selType.value === "comics")) return [3 /*break*/, 3];
-                methodComicId = "/v1/public/comics/" + characterId + "?";
-                methodComicIdCharacters = "/v1/public/comics/" + characterId + "/characters?";
+                methodComicId = "/v1/public/comics/" + cardId + "?";
+                methodComicIdCharacters = "/v1/public/comics/" + cardId + "/characters?";
                 return [4 /*yield*/, getData(offset, methodComicId, queryParams)];
             case 1:
                 comicResponse = _a.sent();
                 dataComic = comicResponse.data.results;
                 return [4 /*yield*/, getData(offset, methodComicIdCharacters, queryParams)];
             case 2:
-                charactersResponse = _a.sent();
+                cardsResponse = _a.sent();
                 cardsContainer.innerHTML = "";
                 cardsSectionSubTitle.innerHTML = "Characters";
                 createComicInfo(dataComic[0]);
-                cardsRelated(charactersResponse);
                 return [3 /*break*/, 6];
             case 3:
-                methodCharacterId = "/v1/public/characters/" + characterId + "?";
-                methodCharacterIdComics = "/v1/public/characters/" + characterId + "/comics?";
+                methodCharacterId = "/v1/public/characters/" + cardId + "?";
+                methodCharacterIdComics = "/v1/public/characters/" + cardId + "/comics?";
                 return [4 /*yield*/, getData(offset, methodCharacterId, queryParams)];
             case 4:
                 characterResponse = _a.sent();
                 dataCharacter = characterResponse.data.results;
                 return [4 /*yield*/, getData(offset, methodCharacterIdComics, queryParams)];
             case 5:
-                comicsResponse = _a.sent();
+                cardsResponse = _a.sent();
                 cardsContainer.innerHTML = "";
                 cardsSectionSubTitle.innerHTML = "Comics";
                 createCharacterInfo(dataCharacter[0]);
-                cardsRelated(comicsResponse);
                 _a.label = 6;
-            case 6: return [2 /*return*/];
+            case 6:
+                cardsRelated(cardsResponse);
+                return [2 /*return*/];
         }
+    });
+}); };
+var getCardData = function (e) { return __awaiter(_this, void 0, void 0, function () {
+    var card;
+    return __generator(this, function (_a) {
+        card = e.target;
+        cardId = card.getAttribute('data-id');
+        console.log(cardId);
+        callInfoMethods(offset);
+        return [2 /*return*/];
     });
 }); };
 cardsContainer.addEventListener('click', getCardData, false);

@@ -37,10 +37,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 var cardsContainer = document.getElementById("cardsContainer");
 var offset = 0;
+
+var page = 1;
+var cardId = "all";
+
 var updateResultsCount = function (count) {
     var cardsSectionResultados = document.getElementById("cardsSectionResults");
     cardsSectionResultados.innerHTML = count + " RESULTADOS";
 };
+
 //Cards
 var createCards = function (offset, expectedfunction) { return __awaiter(_this, void 0, void 0, function () {
     var response, total, data;
@@ -81,13 +86,12 @@ var createCards = function (offset, expectedfunction) { return __awaiter(_this, 
         }
     });
 }); };
-//Calculating the total pages
-var page = 1;
+//Pagination
 var previousPage = document.getElementById("previousPage");
 var nextPage = document.getElementById("nextPage");
 var firstPage = document.getElementById("firstPage");
 var lastPage = document.getElementById("lastPage");
-var disableButtons = function () { return __awaiter(_this, void 0, void 0, function () {
+var disableButtons = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
     var totalPages;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -109,7 +113,7 @@ var disableButtons = function () { return __awaiter(_this, void 0, void 0, funct
                     firstPage.classList.remove('disabledButton');
                     firstPage.disabled = false;
                 }
-                return [4 /*yield*/, getPages()];
+                return [4 /*yield*/, getPages(functionExpected)];
             case 1:
                 totalPages = _a.sent();
                 if (page === totalPages) {
@@ -132,11 +136,12 @@ var disableButtons = function () { return __awaiter(_this, void 0, void 0, funct
         }
     });
 }); };
-var getPages = function () { return __awaiter(_this, void 0, void 0, function () {
+//Calculating the total pages
+var getPages = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
     var response, limit, total, totalPages;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, filters(offset)];
+            case 0: return [4 /*yield*/, functionExpected];
             case 1:
                 response = _a.sent();
                 limit = response.data.limit;
@@ -149,31 +154,39 @@ var getPages = function () { return __awaiter(_this, void 0, void 0, function ()
         }
     });
 }); };
-//Init
-var initFirstPage = function () {
-    createCards(offset, filters(offset));
-    disableButtons();
-};
 //Next page
 var goNextPage = function () {
     page += 1;
     offset += 20;
-    createCards(offset, filters(offset));
 };
 nextPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages;
+    var totalPages, totalPages;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, getPages()];
+            case 0:
+                if (!(cardId == "all")) return [3 /*break*/, 4];
+                return [4 /*yield*/, getPages(filters(offset))];
             case 1:
                 totalPages = _a.sent();
                 if (!(page <= totalPages)) return [3 /*break*/, 3];
                 return [4 /*yield*/, goNextPage()];
             case 2:
                 _a.sent();
-                disableButtons();
+                createCards(offset, filters(offset));
+                disableButtons(filters(offset));
                 _a.label = 3;
-            case 3: return [2 /*return*/];
+            case 3: return [3 /*break*/, 7];
+            case 4: return [4 /*yield*/, getPages(cardsResponse)];
+            case 5:
+                totalPages = _a.sent();
+                if (!(page <= totalPages)) return [3 /*break*/, 7];
+                return [4 /*yield*/, goNextPage()];
+            case 6:
+                _a.sent();
+                createCards(offset, callInfoMethods(offset));
+                disableButtons(cardsResponse);
+                _a.label = 7;
+            case 7: return [2 /*return*/];
         }
     });
 }); });
@@ -181,24 +194,36 @@ nextPage.addEventListener("click", function () { return __awaiter(_this, void 0,
 var goPreviousPage = function () {
     page -= 1;
     offset -= 20;
-    createCards(offset, filters(offset));
 };
 previousPage.addEventListener("click", function () {
     if (page > 1) {
         goPreviousPage();
-        disableButtons();
+        if (cardId == "all") {
+            createCards(offset, filters(offset));
+            disableButtons(filters(offset));
+        }
+        else {
+            createCards(offset, callInfoMethods(offset));
+            disableButtons(cardsResponse);
+        }
     }
 });
 //First page
 var goFirstPage = function () {
     page = 1;
     offset = 0;
-    createCards(offset, filters(offset));
 };
 firstPage.addEventListener("click", function () {
     if (page > 1) {
         goFirstPage();
-        disableButtons();
+        if (cardId == "all") {
+            createCards(offset, filters(offset));
+            disableButtons(filters(offset));
+        }
+        else {
+            createCards(offset, callInfoMethods(offset));
+            disableButtons(cardsResponse);
+        }
     }
 });
 //Last page
@@ -206,36 +231,64 @@ var goLastPage = function () { return __awaiter(_this, void 0, void 0, function 
     var totalPages;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, getPages()];
+            case 0:
+                if (!(cardId == "all")) return [3 /*break*/, 2];
+                return [4 /*yield*/, getPages(filters(offset))];
             case 1:
                 totalPages = _a.sent();
+                return [3 /*break*/, 4];
+            case 2: return [4 /*yield*/, getPages(cardsResponse)];
+            case 3:
+                totalPages = _a.sent();
+                _a.label = 4;
+            case 4:
                 page = totalPages;
                 offset = (totalPages - 1) * 20;
-                createCards(offset, filters(offset));
                 return [2 /*return*/];
         }
     });
 }); };
 lastPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages;
+    var totalPages, totalPages;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, getPages()];
+            case 0:
+                if (!(cardId == "all")) return [3 /*break*/, 4];
+                return [4 /*yield*/, getPages(filters(offset))];
             case 1:
                 totalPages = _a.sent();
                 if (!(page <= totalPages)) return [3 /*break*/, 3];
                 return [4 /*yield*/, goLastPage()];
             case 2:
                 _a.sent();
-                disableButtons();
+                createCards(offset, filters(offset));
+                disableButtons(filters(offset));
                 _a.label = 3;
-            case 3: return [2 /*return*/];
+            case 3: return [3 /*break*/, 7];
+            case 4: return [4 /*yield*/, getPages(cardsResponse)];
+            case 5:
+                totalPages = _a.sent();
+                if (!(page <= totalPages)) return [3 /*break*/, 7];
+                return [4 /*yield*/, goLastPage()];
+            case 6:
+                _a.sent();
+                createCards(offset, callInfoMethods(offset));
+                disableButtons(cardsResponse);
+                _a.label = 7;
+            case 7: return [2 /*return*/];
         }
     });
 }); });
+//Init
+var initFirstPage = function () {
+    createCards(offset, filters(offset));
+    disableButtons(filters(offset));
+};
 initFirstPage();
 var searcherButton = document.getElementById("searcherButton");
 searcherButton.addEventListener('click', function () {
+    cardId = "all";
+    console.log(cardId);
     cardsSectionSubTitle.innerHTML = "Results";
     cardInfo.innerHTML = "";
     createCards(offset, filters(offset));

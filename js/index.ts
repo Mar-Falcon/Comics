@@ -1,5 +1,7 @@
 const cardsContainer = document.getElementById("cardsContainer");
 let offset = 0;
+let page = 1;
+let cardId = "all";
 
 const updateResultsCount = (count) => {     
     const cardsSectionResultados = document.getElementById("cardsSectionResults");
@@ -39,15 +41,14 @@ const createCards = async (offset, expectedfunction) => {
     });      
 }
 
-//Calculating the total pages
+//Pagination
 
-let page = 1;
 const previousPage = (<HTMLButtonElement>document.getElementById("previousPage"));
 const nextPage = (<HTMLButtonElement>document.getElementById("nextPage"));
 const firstPage = (<HTMLButtonElement>document.getElementById("firstPage"));
 const lastPage = (<HTMLButtonElement>document.getElementById("lastPage"));
 
-const disableButtons = async () => {
+const disableButtons = async (functionExpected) => {
     //Previous and first page buttons
     if(page === 1){
         previousPage.classList.remove('enabledButton');
@@ -66,7 +67,7 @@ const disableButtons = async () => {
     }
 
     //Next and last page buttons
-    const totalPages = await getPages();
+    const totalPages = await getPages(functionExpected);
     if(page === totalPages){
         nextPage.classList.remove('enabledButton');
         nextPage.classList.add('disabledButton');
@@ -84,8 +85,9 @@ const disableButtons = async () => {
     }
 }
 
-const getPages = async () =>{
-    const response = await filters(offset);
+//Calculating the total pages
+const getPages = async (functionExpected) =>{
+    const response = await functionExpected;
     const limit = response.data.limit;
     const total = response.data.total;
     let totalPages = total / limit;
@@ -95,75 +97,113 @@ const getPages = async () =>{
     return totalPages;
 }
 
-//Init
-const initFirstPage = () =>{
-    createCards(offset, filters(offset));
-    disableButtons();
-}
-
 //Next page
 const goNextPage = () =>{
     page += 1;
-    offset += 20;
-    createCards(offset, filters(offset));  
+    offset += 20; 
 }
 
 nextPage.addEventListener("click", async () =>{
-    const totalPages = await getPages();
-    if(page <= totalPages){
-        await goNextPage();
-        disableButtons();
+    if (cardId == "all") {
+        const totalPages = await getPages(filters(offset));
+        if(page <= totalPages){
+            await goNextPage();
+            createCards(offset, filters(offset)); 
+            disableButtons(filters(offset));
+        }
+    } else {
+        const totalPages = await getPages(cardsResponse);
+        if(page <= totalPages){
+            await goNextPage();
+            createCards(offset, callInfoMethods(offset)); 
+            disableButtons(cardsResponse);
+        }
     }
 });
 
 //Previous page
 const goPreviousPage = ()=>{
     page -= 1;
-    offset -= 20;
-    createCards(offset, filters(offset));  
+    offset -= 20;  
 }
 
 previousPage.addEventListener("click", () =>{
     if(page > 1){
         goPreviousPage();
-        disableButtons();
+        if (cardId == "all") {
+            createCards(offset, filters(offset));
+            disableButtons(filters(offset));
+        } else {
+            createCards(offset, callInfoMethods(offset));
+            disableButtons(cardsResponse);
+        }
     }
 });
 
 //First page
 const goFirstPage = () => {
     page = 1;
-    offset = 0;
-    createCards(offset, filters(offset));  
+    offset = 0; 
 }
 firstPage.addEventListener("click", () => {
     if(page > 1){
         goFirstPage();
-        disableButtons();
+        if (cardId == "all"){
+            createCards(offset, filters(offset)); 
+            disableButtons(filters(offset));
+        } else {
+            createCards(offset, callInfoMethods(offset));
+            disableButtons(cardsResponse);
+        }
     }
 });
 
 //Last page
 const goLastPage = async () => {
-    const totalPages = await getPages();
+    let totalPages;
+    if (cardId == "all") {
+        totalPages = await getPages(filters(offset));
+    } else {
+        totalPages = await getPages(cardsResponse);
+    }
     page = totalPages;
     offset = (totalPages-1)*20;
-    createCards(offset, filters(offset));  
 }
-lastPage.addEventListener("click", async () => {
-    const totalPages = await getPages();
-    if(page <= totalPages){
-        await goLastPage();
-        disableButtons();
-    }
+lastPage.addEventListener("click", async () => { 
+        if (cardId == "all") {
+        const totalPages = await getPages(filters(offset));
+            if(page <= totalPages){
+                await goLastPage();
+                createCards(offset, filters(offset));
+                disableButtons(filters(offset));
+            }
+        } else {
+            const totalPages = await getPages(cardsResponse);
+            if(page <= totalPages){
+                await goLastPage();
+                createCards(offset, callInfoMethods(offset));
+                disableButtons(cardsResponse);
+            }
+        }
 });
+
+
+//Init
+const initFirstPage = () =>{
+    createCards(offset, filters(offset));
+    disableButtons(filters(offset));
+}
 
 initFirstPage();
 
 const searcherButton = document.getElementById("searcherButton");
 searcherButton.addEventListener('click', () =>{
+    cardId = "all";
+    console.log(cardId);
     cardsSectionSubTitle.innerHTML = "Results";
     cardInfo.innerHTML="";
     createCards(offset, filters(offset));
     updateResultsCount(0);
 })
+
+
