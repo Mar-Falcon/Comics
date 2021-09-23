@@ -1,5 +1,6 @@
 const cardsSectionSubTitle = document.getElementById('cardsSectionSubTitle');
 const cardInfo = document.getElementById('cardInfo');
+let cardsResponse;
 
 const createCharacterInfo = (element) => {
     cardInfo.innerHTML = "";
@@ -88,31 +89,38 @@ const cardsRelated = (response) => {
     }
 }
 
-const getCardData = async (e) => {
-    const card = e.target;
-    const characterId = card.getAttribute('data-id');
+const callInfoMethods = async(offset) => {
+    cardsResponse = "";
     let queryParams = `ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`;
     if(selType.value === "comics"){
-        const methodComicId = `/v1/public/comics/${characterId}?`;
-        const methodComicIdCharacters = `/v1/public/comics/${characterId}/characters?`;
+        const methodComicId = `/v1/public/comics/${cardId}?`;
+        const methodComicIdCharacters = `/v1/public/comics/${cardId}/characters?`;
         const comicResponse = await getData(offset,  methodComicId, queryParams);
         const dataComic = comicResponse.data.results;
-        const charactersResponse = await getData(offset,  methodComicIdCharacters, queryParams);
+        cardsResponse = await getData(offset,  methodComicIdCharacters, queryParams);
         cardsContainer.innerHTML = "";
         cardsSectionSubTitle.innerHTML = "Characters";
         createComicInfo(dataComic[0])
-        cardsRelated(charactersResponse);
         
     } else {
-        const methodCharacterId = `/v1/public/characters/${characterId}?`;
-        const methodCharacterIdComics = `/v1/public/characters/${characterId}/comics?`;
+        const methodCharacterId = `/v1/public/characters/${cardId}?`;
+        const methodCharacterIdComics = `/v1/public/characters/${cardId}/comics?`;
         const characterResponse = await getData(offset,  methodCharacterId, queryParams);
         const dataCharacter = characterResponse.data.results;
-        const comicsResponse = await getData(offset,  methodCharacterIdComics, queryParams);
+        cardsResponse = await getData(offset,  methodCharacterIdComics, queryParams);
         cardsContainer.innerHTML = "";
         cardsSectionSubTitle.innerHTML = "Comics";
         createCharacterInfo(dataCharacter[0])
-        cardsRelated(comicsResponse);
     }
+    cardsRelated(cardsResponse);
+}
+
+
+const getCardData = async (e) => {
+    const card = e.target;
+    cardId = card.getAttribute('data-id');
+    console.log(cardId);
+    callInfoMethods(offset);
+    
 }
 cardsContainer.addEventListener('click', getCardData, false);
