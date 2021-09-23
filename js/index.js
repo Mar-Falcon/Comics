@@ -234,10 +234,10 @@ lastPage.addEventListener("click", function () { return __awaiter(_this, void 0,
     });
 }); });
 initFirstPage();
-updateResultsCount(0);
 var searcherButton = document.getElementById("searcherButton");
 searcherButton.addEventListener('click', function () {
     cardsSectionSubTitle.innerHTML = "Results";
     cardInfo.innerHTML = "";
     createCards(offset, filters(offset));
+    updateResultsCount(0);
 });

@@ -35,9 +35,7 @@ const createCards = async (offset, expectedfunction) => {
         title.appendChild(titleTxt);
         
         card.appendChild(title);
-        cardsContainer.appendChild(card);
-
-        
+        cardsContainer.appendChild(card);        
     });      
 }
 
@@ -161,12 +159,11 @@ lastPage.addEventListener("click", async () => {
 });
 
 initFirstPage();
-updateResultsCount(0);
-
 
 const searcherButton = document.getElementById("searcherButton");
 searcherButton.addEventListener('click', () =>{
     cardsSectionSubTitle.innerHTML = "Results";
     cardInfo.innerHTML="";
     createCards(offset, filters(offset));
+    updateResultsCount(0);
 })

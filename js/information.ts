@@ -82,6 +82,7 @@ const createComicInfo = (element) => {
     info.appendChild(description);
 
     cardInfo.appendChild(info);
+    updateResultsCount(0);
 }
 const cardsRelated = (response) => {
     if(response.data.total === 0){
