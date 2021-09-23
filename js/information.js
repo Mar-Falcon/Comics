@@ -84,21 +84,30 @@ var createComicInfo = function (element) {
     publishedTitle.appendChild(publishedTitleTxt);
     info.appendChild(publishedTitle);
     var convertDateFormat = function (dates) {
-        var releaseDate = new Intl.DateTimeFormat('es-AR').format(new Date(dates.date));
+        var releaseDate = "";
+        if (dates.type === 'onsaleDate') {
+            releaseDate = new Intl.DateTimeFormat('es-AR').format(new Date(dates.date));
+        }
+        ;
         return "  " + releaseDate;
     };
-    var dateData = element.dates.map(convertDateFormat);
+    var dateData = element.dates.map(convertDateFormat).join("");
     var publishedTxt = document.createTextNode(dateData);
     published.appendChild(publishedTxt);
     info.appendChild(published);
-    //Info Writers
+    //Info Writers 
     var writerTitleTxt = document.createTextNode("Writers:");
     writerTitle.appendChild(writerTitleTxt);
     info.appendChild(writerTitle);
     var formatName = function (items) {
-        return "   " + items.name;
+        var writer = "";
+        if (items.role === 'writer') {
+            writer = items.name;
+        }
+        return writer;
     };
-    var writerData = element.creators.items.map(formatName);
+    var writerData = element.creators.items.map(formatName).join("");
+    console.log(element.creators.items[0]);
     var writerTxt = document.createTextNode(writerData);
     writer.appendChild(writerTxt);
     info.appendChild(writer);
