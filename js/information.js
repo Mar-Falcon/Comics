@@ -120,6 +120,17 @@ var createComicInfo = function (element) {
     info.appendChild(description);
     cardInfo.appendChild(info);
 };
+var cardsRelated = function (response) {
+    if (response.data.total === 0) {
+        var notResults = document.createElement('h2');
+        var txtNotResults = document.createTextNode('No results found');
+        notResults.appendChild(txtNotResults);
+        cardsContainer.appendChild(notResults);
+    }
+    else {
+        createCards(offset, response);
+    }
+};
 var getCardData = function (e) { return __awaiter(_this, void 0, void 0, function () {
     var card, characterId, queryParams, methodComicId, methodComicIdCharacters, comicResponse, dataComic, charactersResponse, methodCharacterId, methodCharacterIdComics, characterResponse, dataCharacter, comicsResponse;
     return __generator(this, function (_a) {
@@ -134,7 +145,6 @@ var getCardData = function (e) { return __awaiter(_this, void 0, void 0, functio
                 return [4 /*yield*/, getData(offset, methodComicId, queryParams)];
             case 1:
                 comicResponse = _a.sent();
-                console.log(comicResponse);
                 dataComic = comicResponse.data.results;
                 return [4 /*yield*/, getData(offset, methodComicIdCharacters, queryParams)];
             case 2:
@@ -142,7 +152,7 @@ var getCardData = function (e) { return __awaiter(_this, void 0, void 0, functio
                 cardsContainer.innerHTML = "";
                 cardsSectionSubTitle.innerHTML = "Characters";
                 createComicInfo(dataComic[0]);
-                createCards(offset, charactersResponse);
+                cardsRelated(charactersResponse);
                 return [3 /*break*/, 6];
             case 3:
                 methodCharacterId = "/v1/public/characters/" + characterId + "?";
@@ -157,7 +167,7 @@ var getCardData = function (e) { return __awaiter(_this, void 0, void 0, functio
                 cardsContainer.innerHTML = "";
                 cardsSectionSubTitle.innerHTML = "Comics";
                 createCharacterInfo(dataCharacter[0]);
-                createCards(offset, comicsResponse);
+                cardsRelated(comicsResponse);
                 _a.label = 6;
             case 6: return [2 /*return*/];
         }

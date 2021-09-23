@@ -69,7 +69,7 @@ const createComicInfo = (element) => {
         return writer;
     }
     const writerData = element.creators.items.map(formatName).join("");    
-    console.log(element.creators.items[0]);
+    console.log(element.creators.items[0]);    
     const writerTxt = document.createTextNode(writerData);    
     writer.appendChild(writerTxt);
     info.appendChild(writer);
@@ -83,7 +83,16 @@ const createComicInfo = (element) => {
 
     cardInfo.appendChild(info);
 }
-
+const cardsRelated = (response) => {
+    if(response.data.total === 0){
+        const notResults = document.createElement('h2');
+        const txtNotResults = document.createTextNode('No results found');
+        notResults.appendChild(txtNotResults);
+        cardsContainer.appendChild(notResults);
+    }else{
+        createCards(offset, response);
+    }
+}
 const getCardData = async (e) => {
     const card = e.target;
     const characterId = card.getAttribute('data-id');
@@ -92,13 +101,13 @@ const getCardData = async (e) => {
         const methodComicId = `/v1/public/comics/${characterId}?`;
         const methodComicIdCharacters = `/v1/public/comics/${characterId}/characters?`;
         const comicResponse = await getData(offset,  methodComicId, queryParams);
-        console.log(comicResponse);
         const dataComic = comicResponse.data.results;
         const charactersResponse = await getData(offset,  methodComicIdCharacters, queryParams);
         cardsContainer.innerHTML = "";
         cardsSectionSubTitle.innerHTML = "Characters";
         createComicInfo(dataComic[0])
-        createCards(offset, charactersResponse);
+        cardsRelated(charactersResponse);
+        
     } else {
         const methodCharacterId = `/v1/public/characters/${characterId}?`;
         const methodCharacterIdComics = `/v1/public/characters/${characterId}/comics?`;
@@ -108,7 +117,7 @@ const getCardData = async (e) => {
         cardsContainer.innerHTML = "";
         cardsSectionSubTitle.innerHTML = "Comics";
         createCharacterInfo(dataCharacter[0])
-        createCards(offset, comicsResponse);
+        cardsRelated(comicsResponse);
     }
 }
 cardsContainer.addEventListener('click', getCardData, false);
