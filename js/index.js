@@ -37,21 +37,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 var cardsContainer = document.getElementById("cardsContainer");
 var offset = 0;
-
 var page = 1;
 var cardId = "all";
-
+//Number of Cards - Results
 var updateResultsCount = function (count) {
     var cardsSectionResultados = document.getElementById("cardsSectionResults");
-    cardsSectionResultados.innerHTML = count + " RESULTADOS";
+    cardsSectionResultados.innerHTML = count + " RESULTS";
 };
-
-//Cards
+//Creating Cards
 var createCards = function (offset, expectedfunction) { return __awaiter(_this, void 0, void 0, function () {
-    var response, total, data;
+    var response, total, data, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 2, , 3]);
                 cardsContainer.innerHTML = "";
                 return [4 /*yield*/, expectedfunction];
             case 1:
@@ -82,20 +81,28 @@ var createCards = function (offset, expectedfunction) { return __awaiter(_this, 
                     card.appendChild(title);
                     cardsContainer.appendChild(card);
                 });
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                error_1 = _a.sent();
+                alert("Error: There's a problem with the server");
+                console.log(error_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
-//Pagination
+//PAGINATION
 var previousPage = document.getElementById("previousPage");
 var nextPage = document.getElementById("nextPage");
 var firstPage = document.getElementById("firstPage");
 var lastPage = document.getElementById("lastPage");
+//Disabling buttons
 var disableButtons = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages;
+    var totalPages, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 2, , 3]);
                 //Previous and first page buttons
                 if (page === 1) {
                     previousPage.classList.remove('enabledButton');
@@ -132,17 +139,28 @@ var disableButtons = function (functionExpected) { return __awaiter(_this, void 
                     lastPage.classList.remove('disabledButton');
                     lastPage.disabled = false;
                 }
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                error_2 = _a.sent();
+                alert("Error: There's a problem with the server");
+                console.log(error_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
-//Calculating the total pages
+//Calculating the Total Pages
 var getPages = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
-    var response, limit, total, totalPages;
+    var totalPages, response, limit, total, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, functionExpected];
+            case 0:
+                totalPages = 0;
+                _a.label = 1;
             case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, functionExpected];
+            case 2:
                 response = _a.sent();
                 limit = response.data.limit;
                 total = response.data.total;
@@ -151,19 +169,26 @@ var getPages = function (functionExpected) { return __awaiter(_this, void 0, voi
                     totalPages = Math.ceil(totalPages);
                 }
                 return [2 /*return*/, totalPages];
+            case 3:
+                error_3 = _a.sent();
+                alert("Error: There's a problem with the server");
+                console.log(error_3);
+                return [2 /*return*/, totalPages];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-//Next page
+//Next Page
 var goNextPage = function () {
     page += 1;
     offset += 20;
 };
 nextPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, totalPages;
+    var totalPages, totalPages, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 8, , 9]);
                 if (!(cardId == "all")) return [3 /*break*/, 4];
                 return [4 /*yield*/, getPages(filters(offset))];
             case 1:
@@ -186,11 +211,17 @@ nextPage.addEventListener("click", function () { return __awaiter(_this, void 0,
                 createCards(offset, callInfoMethods(offset));
                 disableButtons(cardsResponse);
                 _a.label = 7;
-            case 7: return [2 /*return*/];
+            case 7: return [3 /*break*/, 9];
+            case 8:
+                error_4 = _a.sent();
+                alert("Error: There's a problem with the server");
+                console.log(error_4);
+                return [3 /*break*/, 9];
+            case 9: return [2 /*return*/];
         }
     });
 }); });
-//Previous page
+//Previous Page
 var goPreviousPage = function () {
     page -= 1;
     offset -= 20;
@@ -208,7 +239,7 @@ previousPage.addEventListener("click", function () {
         }
     }
 });
-//First page
+//First Page
 var goFirstPage = function () {
     page = 1;
     offset = 0;
@@ -226,12 +257,14 @@ firstPage.addEventListener("click", function () {
         }
     }
 });
-//Last page
+//Last Page
 var goLastPage = function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages;
+    var totalPages, error_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 5, , 6]);
+                totalPages = void 0;
                 if (!(cardId == "all")) return [3 /*break*/, 2];
                 return [4 /*yield*/, getPages(filters(offset))];
             case 1:
@@ -244,15 +277,22 @@ var goLastPage = function () { return __awaiter(_this, void 0, void 0, function 
             case 4:
                 page = totalPages;
                 offset = (totalPages - 1) * 20;
-                return [2 /*return*/];
+                return [3 /*break*/, 6];
+            case 5:
+                error_5 = _a.sent();
+                alert("Error: There's a problem with the server");
+                console.log(error_5);
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
 lastPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, totalPages;
+    var totalPages, totalPages, error_6;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 8, , 9]);
                 if (!(cardId == "all")) return [3 /*break*/, 4];
                 return [4 /*yield*/, getPages(filters(offset))];
             case 1:
@@ -275,16 +315,23 @@ lastPage.addEventListener("click", function () { return __awaiter(_this, void 0,
                 createCards(offset, callInfoMethods(offset));
                 disableButtons(cardsResponse);
                 _a.label = 7;
-            case 7: return [2 /*return*/];
+            case 7: return [3 /*break*/, 9];
+            case 8:
+                error_6 = _a.sent();
+                alert("Error: There's a problem with the server");
+                console.log(error_6);
+                return [3 /*break*/, 9];
+            case 9: return [2 /*return*/];
         }
     });
 }); });
-//Init
+//CARDS INITIALIZATION
 var initFirstPage = function () {
     createCards(offset, filters(offset));
     disableButtons(filters(offset));
 };
 initFirstPage();
+//SEARCHER BUTTON
 var searcherButton = document.getElementById("searcherButton");
 searcherButton.addEventListener('click', function () {
     cardId = "all";

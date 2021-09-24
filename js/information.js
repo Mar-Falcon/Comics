@@ -38,6 +38,12 @@ var _this = this;
 var cardsSectionSubTitle = document.getElementById('cardsSectionSubTitle');
 var cardInfo = document.getElementById('cardInfo');
 var cardsResponse;
+//Converter Date
+var convertDateFormat = function (date) {
+    return new Intl.DateTimeFormat('es-AR').format(new Date(date));
+};
+//CARD INFORMATION
+//Character Information
 var createCharacterInfo = function (element) {
     cardInfo.innerHTML = "";
     var img = document.createElement("img");
@@ -56,6 +62,7 @@ var createCharacterInfo = function (element) {
     info.appendChild(description);
     cardInfo.appendChild(info);
 };
+//Comic Information
 var createComicInfo = function (element) {
     cardInfo.innerHTML = "";
     var img = document.createElement("img");
@@ -84,15 +91,12 @@ var createComicInfo = function (element) {
     var publishedTitleTxt = document.createTextNode("Published:");
     publishedTitle.appendChild(publishedTitleTxt);
     info.appendChild(publishedTitle);
-    var convertDateFormat = function (dates) {
+    var dateData = element.dates.map(function (element) {
         var releaseDate = "";
-        if (dates.type === 'onsaleDate') {
-            releaseDate = new Intl.DateTimeFormat('es-AR').format(new Date(dates.date));
+        if (element.type === 'onsaleDate') {
+            return convertDateFormat(element.date);
         }
-        ;
-        return "  " + releaseDate;
-    };
-    var dateData = element.dates.map(convertDateFormat).join("");
+    }).join('');
     var publishedTxt = document.createTextNode(dateData);
     published.appendChild(publishedTxt);
     info.appendChild(published);

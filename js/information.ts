@@ -2,6 +2,14 @@ const cardsSectionSubTitle = document.getElementById('cardsSectionSubTitle');
 const cardInfo = document.getElementById('cardInfo');
 let cardsResponse;
 
+//Converter Date
+const convertDateFormat = (date) => {
+    return new Intl.DateTimeFormat('es-AR').format(new Date(date));  
+}  
+
+//CARD INFORMATION
+
+//Character Information
 const createCharacterInfo = (element) => {
     cardInfo.innerHTML = "";
     const img = document.createElement("img");
@@ -20,6 +28,8 @@ const createCharacterInfo = (element) => {
     info.appendChild(description);
     cardInfo.appendChild(info);
 }
+
+//Comic Information
 const createComicInfo = (element) => {
     cardInfo.innerHTML = "";
     const img = document.createElement("img");
@@ -44,25 +54,26 @@ const createComicInfo = (element) => {
     title.appendChild(titleTxt);
     cardInfo.appendChild(img);
     info.appendChild(title);
+
     //Info Published
     const publishedTitleTxt = document.createTextNode("Published:");    
     publishedTitle.appendChild(publishedTitleTxt);
-    info.appendChild(publishedTitle);    
-    const convertDateFormat = (dates) => {
+    info.appendChild(publishedTitle); 
+    const dateData = element.dates.map(element => {
         let releaseDate = "";
-        if (dates.type === 'onsaleDate'){
-        releaseDate = new Intl.DateTimeFormat('es-AR').format(new Date(dates.date))};                
-        return `  ${releaseDate}`;
-    }  
-    const dateData = element.dates.map(convertDateFormat).join("");      
+        if (element.type === 'onsaleDate'){
+        return convertDateFormat(element.date);
+        }
+    }).join('');
     const publishedTxt = document.createTextNode(dateData);    
     published.appendChild(publishedTxt);
     info.appendChild(published);
+
     //Info Writers 
     const writerTitleTxt = document.createTextNode("Writers:");    
     writerTitle.appendChild(writerTitleTxt);
     info.appendChild(writerTitle);
-    const formatName = (items) =>{        
+    const formatName = (items) => {        
         let writer = "";
         if (items.role === 'writer'){            
             writer = items.name;            
@@ -74,6 +85,7 @@ const createComicInfo = (element) => {
     const writerTxt = document.createTextNode(writerData);    
     writer.appendChild(writerTxt);
     info.appendChild(writer);
+
     //Info Description
     const descriptionTitleTxt = document.createTextNode("Description:");    
     descriptionTitle.appendChild(descriptionTitleTxt);
@@ -85,6 +97,7 @@ const createComicInfo = (element) => {
     cardInfo.appendChild(info);
     updateResultsCount(0);
 }
+
 const cardsRelated = (response) => {
     if(response.data.total === 0){
         const notResults = document.createElement('h2');
@@ -130,6 +143,5 @@ const getCardData = async (e) => {
     cardId = card.getAttribute('data-id');
     console.log(cardId);
     callInfoMethods(offset);
-    
 }
 cardsContainer.addEventListener('click', getCardData, false);
