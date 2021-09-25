@@ -1,6 +1,5 @@
 const cardsSectionSubTitle = document.getElementById('cardsSectionSubTitle');
 const cardInfo = document.getElementById('cardInfo');
-let cardsResponse;
 
 //Converter Date
 const convertDateFormat = (date) => {
@@ -98,50 +97,52 @@ const createComicInfo = (element) => {
     updateResultsCount(0);
 }
 
-const cardsRelated = (response) => {
+const cardsRelated = (response, type) => {
+    cardsContainer.innerHTML = "";
     if(response.data.total === 0){
         const notResults = document.createElement('h2');
         const txtNotResults = document.createTextNode('No results found');
         notResults.appendChild(txtNotResults);
         cardsContainer.appendChild(notResults);
     }else{
-        createCards(offset, response);
+        createCards(response, type);
     }
 }
 
 
-const callInfoMethods = async(offset) => {
-    cardsResponse = "";
+//Generate Card Information Page
+const getCardInfo = async () => {
+    let cardsResponse = [];
+    offset = 0;
+    const params = new URLSearchParams(window.location.search);
+    let baseParams = `?ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`; //&orderBy=${params.get("orderBy")}
+    
+    try{
+        if(params.get("type") === "comics"){
+            const methodComicId = `/${params.get("id")}${baseParams}`;
+            const methodComicIdCharacters = `/${params.get("id")}/characters${baseParams}`;
+            const comicResponse = await getDataComics(methodComicId);
+            const dataComic = comicResponse.data.results;
+            cardsResponse = await getDataComics(methodComicIdCharacters);
+            cardsSectionSubTitle.innerHTML = "Characters";
+            createComicInfo(dataComic[0]);
 
-    let queryParams = `ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`;
-    if(selType.value === "comics"){
-        const methodComicId = `/v1/public/comics/${cardId}?`;
-        const methodComicIdCharacters = `/v1/public/comics/${cardId}/characters?`;
-        const comicResponse = await getData(offset,  methodComicId, queryParams);
-        const dataComic = comicResponse.data.results;
-        cardsResponse = await getData(offset,  methodComicIdCharacters, queryParams);
-        cardsContainer.innerHTML = "";
-        cardsSectionSubTitle.innerHTML = "Characters";
-        createComicInfo(dataComic[0])
-        
-    } else {
-        const methodCharacterId = `/v1/public/characters/${cardId}?`;
-        const methodCharacterIdComics = `/v1/public/characters/${cardId}/comics?`;
-        const characterResponse = await getData(offset,  methodCharacterId, queryParams);
-        const dataCharacter = characterResponse.data.results;
-        cardsResponse = await getData(offset,  methodCharacterIdComics, queryParams);
-        cardsContainer.innerHTML = "";
-        cardsSectionSubTitle.innerHTML = "Comics";
-        createCharacterInfo(dataCharacter[0])
+        } else {
+            const methodCharacterId = `/${params.get("id")}${baseParams}`;
+            const methodCharacterIdComics = `/${params.get("id")}/comics${baseParams}`;
+            const characterResponse = await getDataCharacters(methodCharacterId);
+            console.log(`methodCharacterIdComics: ${methodCharacterIdComics}`)
+            const dataCharacter = characterResponse.data.results;
+            cardsResponse = await getDataCharacters(methodCharacterIdComics);
+            cardsSectionSubTitle.innerHTML = "Comics";
+            createCharacterInfo(dataCharacter[0]);
+        }
+        cardsRelated(cardsResponse, params.get("type"));
     }
-    cardsRelated(cardsResponse);
+    catch(error){
+        alert("Error: There's a problem with the server")
+        console.log(error);
+    }
 }
 
-
-const getCardData = async (e) => {
-    const card = e.target;
-    cardId = card.getAttribute('data-id');
-    console.log(cardId);
-    callInfoMethods(offset);
-}
-cardsContainer.addEventListener('click', getCardData, false);
+getCardInfo();

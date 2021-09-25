@@ -36,308 +36,279 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 var cardsContainer = document.getElementById("cardsContainer");
-var offset = 0;
-var page = 1;
-var cardId = "all";
 //Number of Cards - Results
 var updateResultsCount = function (count) {
     var cardsSectionResultados = document.getElementById("cardsSectionResults");
     cardsSectionResultados.innerHTML = count + " RESULTS";
 };
 //Creating Cards
-var createCards = function (offset, expectedfunction) { return __awaiter(_this, void 0, void 0, function () {
-    var response, total, data, error_1;
+var createCards = function (response, type) {
+    cardsContainer.innerHTML = "";
+    var total = response.data.total;
+    updateResultsCount(total);
+    var data = response.data.results;
+    data.forEach(function (element) {
+        var a = document.createElement("a");
+        var card = document.createElement("div");
+        var img = document.createElement("img");
+        var title = document.createElement("h3");
+        a.setAttribute("href", "details.html?id=" + element.id + "&type=" + type);
+        img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
+        var titleTxt = document.createTextNode(element.title || element.name);
+        img.classList.add("card__img");
+        title.classList.add("card__h3");
+        card.classList.add("card");
+        a.classList.add("anchor");
+        a.appendChild(img);
+        title.appendChild(titleTxt);
+        a.appendChild(title);
+        card.appendChild(a);
+        cardsContainer.appendChild(card);
+    });
+};
+//URL, METHODS
+var baseUrl = "http://gateway.marvel.com/";
+var apiKey = "3837d58127c2d8d73d7bda851100d507";
+var hash = "1fcfb0ff82123c45591cd5affb7b538f";
+//GET DATA
+//Get Data Comics
+var getDataComics = function (param) { return __awaiter(_this, void 0, void 0, function () {
+    var data, response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                cardsContainer.innerHTML = "";
-                return [4 /*yield*/, expectedfunction];
+                data = [];
+                _a.label = 1;
             case 1:
-                response = _a.sent();
-                total = response.data.total;
-                updateResultsCount(total);
-                data = response.data.results;
-                data.forEach(function (element) {
-                    var card = document.createElement("div");
-                    var img = document.createElement("img");
-                    var title = document.createElement("h3");
-                    img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
-                    var titleTxt;
-                    if (selType.value === "comics") { //<-- Comic title
-                        titleTxt = document.createTextNode(element.title || element.name);
-                    }
-                    else { //<-- Character name
-                        titleTxt = document.createTextNode(element.name || element.title);
-                    }
-                    img.classList.add("card__img");
-                    title.classList.add("card__h3");
-                    card.classList.add("card");
-                    card.dataset.id = element.id;
-                    img.dataset.id = element.id;
-                    title.dataset.id = element.id;
-                    card.appendChild(img);
-                    title.appendChild(titleTxt);
-                    card.appendChild(title);
-                    cardsContainer.appendChild(card);
-                });
-                return [3 /*break*/, 3];
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, fetch(baseUrl + "v1/public/comics" + param)];
             case 2:
+                response = _a.sent();
+                return [4 /*yield*/, response.json()];
+            case 3:
+                data = _a.sent();
+                return [2 /*return*/, data];
+            case 4:
                 error_1 = _a.sent();
                 alert("Error: There's a problem with the server");
                 console.log(error_1);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [2 /*return*/, data];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
-//PAGINATION
-var previousPage = document.getElementById("previousPage");
-var nextPage = document.getElementById("nextPage");
-var firstPage = document.getElementById("firstPage");
-var lastPage = document.getElementById("lastPage");
-//Disabling buttons
-var disableButtons = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, error_2;
+//Get Data Characters
+var getDataCharacters = function (param) { return __awaiter(_this, void 0, void 0, function () {
+    var data, response, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                //Previous and first page buttons
-                if (page === 1) {
-                    previousPage.classList.remove('enabledButton');
-                    previousPage.classList.add('disabledButton');
-                    previousPage.disabled = true;
-                    firstPage.classList.remove('enabledButton');
-                    firstPage.classList.add('disabledButton');
-                    firstPage.disabled = true;
-                }
-                else {
-                    previousPage.classList.add('enabledButton');
-                    previousPage.classList.remove('disabledButton');
-                    previousPage.disabled = false;
-                    firstPage.classList.add('enabledButton');
-                    firstPage.classList.remove('disabledButton');
-                    firstPage.disabled = false;
-                }
-                return [4 /*yield*/, getPages(functionExpected)];
+                data = [];
+                _a.label = 1;
             case 1:
-                totalPages = _a.sent();
-                if (page === totalPages) {
-                    nextPage.classList.remove('enabledButton');
-                    nextPage.classList.add('disabledButton');
-                    nextPage.disabled = true;
-                    lastPage.classList.remove('enabledButton');
-                    lastPage.classList.add('disabledButton');
-                    lastPage.disabled = true;
-                }
-                else {
-                    nextPage.classList.add('enabledButton');
-                    nextPage.classList.remove('disabledButton');
-                    nextPage.disabled = false;
-                    lastPage.classList.add('enabledButton');
-                    lastPage.classList.remove('disabledButton');
-                    lastPage.disabled = false;
-                }
-                return [3 /*break*/, 3];
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, fetch(baseUrl + "/v1/public/characters" + param)];
             case 2:
+                response = _a.sent();
+                return [4 /*yield*/, response.json()];
+            case 3:
+                data = _a.sent();
+                return [2 /*return*/, data];
+            case 4:
                 error_2 = _a.sent();
                 alert("Error: There's a problem with the server");
                 console.log(error_2);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [2 /*return*/, data];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
-//Calculating the Total Pages
-var getPages = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, response, limit, total, error_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                totalPages = 0;
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, functionExpected];
-            case 2:
-                response = _a.sent();
-                limit = response.data.limit;
-                total = response.data.total;
-                totalPages = total / limit;
-                if (totalPages % 1 !== 0) {
-                    totalPages = Math.ceil(totalPages);
-                }
-                return [2 /*return*/, totalPages];
-            case 3:
-                error_3 = _a.sent();
-                alert("Error: There's a problem with the server");
-                console.log(error_3);
-                return [2 /*return*/, totalPages];
-            case 4: return [2 /*return*/];
-        }
-    });
-}); };
-//Next Page
-var goNextPage = function () {
-    page += 1;
-    offset += 20;
-};
-nextPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, totalPages, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 8, , 9]);
-                if (!(cardId == "all")) return [3 /*break*/, 4];
-                return [4 /*yield*/, getPages(filters(offset))];
-            case 1:
-                totalPages = _a.sent();
-                if (!(page <= totalPages)) return [3 /*break*/, 3];
-                return [4 /*yield*/, goNextPage()];
-            case 2:
-                _a.sent();
-                createCards(offset, filters(offset));
-                disableButtons(filters(offset));
-                _a.label = 3;
-            case 3: return [3 /*break*/, 7];
-            case 4: return [4 /*yield*/, getPages(cardsResponse)];
-            case 5:
-                totalPages = _a.sent();
-                if (!(page <= totalPages)) return [3 /*break*/, 7];
-                return [4 /*yield*/, goNextPage()];
-            case 6:
-                _a.sent();
-                createCards(offset, callInfoMethods(offset));
-                disableButtons(cardsResponse);
-                _a.label = 7;
-            case 7: return [3 /*break*/, 9];
-            case 8:
-                error_4 = _a.sent();
-                alert("Error: There's a problem with the server");
-                console.log(error_4);
-                return [3 /*break*/, 9];
-            case 9: return [2 /*return*/];
-        }
-    });
-}); });
-//Previous Page
-var goPreviousPage = function () {
-    page -= 1;
-    offset -= 20;
-};
-previousPage.addEventListener("click", function () {
-    if (page > 1) {
-        goPreviousPage();
-        if (cardId == "all") {
-            createCards(offset, filters(offset));
-            disableButtons(filters(offset));
-        }
-        else {
-            createCards(offset, callInfoMethods(offset));
-            disableButtons(cardsResponse);
-        }
-    }
-});
-//First Page
-var goFirstPage = function () {
-    page = 1;
-    offset = 0;
-};
-firstPage.addEventListener("click", function () {
-    if (page > 1) {
-        goFirstPage();
-        if (cardId == "all") {
-            createCards(offset, filters(offset));
-            disableButtons(filters(offset));
-        }
-        else {
-            createCards(offset, callInfoMethods(offset));
-            disableButtons(cardsResponse);
-        }
-    }
-});
-//Last Page
-var goLastPage = function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, error_5;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 5, , 6]);
-                totalPages = void 0;
-                if (!(cardId == "all")) return [3 /*break*/, 2];
-                return [4 /*yield*/, getPages(filters(offset))];
-            case 1:
-                totalPages = _a.sent();
-                return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, getPages(cardsResponse)];
-            case 3:
-                totalPages = _a.sent();
-                _a.label = 4;
-            case 4:
-                page = totalPages;
-                offset = (totalPages - 1) * 20;
-                return [3 /*break*/, 6];
-            case 5:
-                error_5 = _a.sent();
-                alert("Error: There's a problem with the server");
-                console.log(error_5);
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
-        }
-    });
-}); };
-lastPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, totalPages, error_6;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 8, , 9]);
-                if (!(cardId == "all")) return [3 /*break*/, 4];
-                return [4 /*yield*/, getPages(filters(offset))];
-            case 1:
-                totalPages = _a.sent();
-                if (!(page <= totalPages)) return [3 /*break*/, 3];
-                return [4 /*yield*/, goLastPage()];
-            case 2:
-                _a.sent();
-                createCards(offset, filters(offset));
-                disableButtons(filters(offset));
-                _a.label = 3;
-            case 3: return [3 /*break*/, 7];
-            case 4: return [4 /*yield*/, getPages(cardsResponse)];
-            case 5:
-                totalPages = _a.sent();
-                if (!(page <= totalPages)) return [3 /*break*/, 7];
-                return [4 /*yield*/, goLastPage()];
-            case 6:
-                _a.sent();
-                createCards(offset, callInfoMethods(offset));
-                disableButtons(cardsResponse);
-                _a.label = 7;
-            case 7: return [3 /*break*/, 9];
-            case 8:
-                error_6 = _a.sent();
-                alert("Error: There's a problem with the server");
-                console.log(error_6);
-                return [3 /*break*/, 9];
-            case 9: return [2 /*return*/];
-        }
-    });
-}); });
 //CARDS INITIALIZATION
-var initFirstPage = function () {
-    createCards(offset, filters(offset));
-    disableButtons(filters(offset));
-};
-initFirstPage();
-//SEARCHER BUTTON
-var searcherButton = document.getElementById("searcherButton");
-searcherButton.addEventListener('click', function () {
-    cardId = "all";
-    console.log(cardId);
-    cardsSectionSubTitle.innerHTML = "Results";
-    cardInfo.innerHTML = "";
-    createCards(offset, filters(offset));
-    updateResultsCount(0);
-});
+var initFirstPage = function () { return __awaiter(_this, void 0, void 0, function () {
+    var baseParams, response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                offset = 0;
+                baseParams = "?ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset + "&orderBy=title";
+                return [4 /*yield*/, getDataComics(baseParams)];
+            case 1:
+                response = _a.sent();
+                createCards(response, "comics");
+                return [2 /*return*/];
+        }
+    });
+}); };
+var params = new URLSearchParams(window.location.search);
+if (window.location.href === "http://127.0.0.1:5500/index.html") {
+    initFirstPage();
+}
+// TO CHECK
+// //PAGINATION
+// const previousPage = (<HTMLButtonElement>document.getElementById("previousPage"));
+// const nextPage = (<HTMLButtonElement>document.getElementById("nextPage"));
+// const firstPage = (<HTMLButtonElement>document.getElementById("firstPage"));
+// const lastPage = (<HTMLButtonElement>document.getElementById("lastPage"));
+// //Disabling buttons
+// const disableButtons = async (functionExpected) => {
+//     try{
+//         //Previous and first page buttons
+//         if(page === 1){
+//             previousPage.classList.remove('enabledButton');
+//             previousPage.classList.add('disabledButton');
+//             previousPage.disabled=true;
+//             firstPage.classList.remove('enabledButton');
+//             firstPage.classList.add('disabledButton');
+//             firstPage.disabled=true;
+//         }else{
+//             previousPage.classList.add('enabledButton');
+//             previousPage.classList.remove('disabledButton');
+//             previousPage.disabled=false;
+//             firstPage.classList.add('enabledButton');
+//             firstPage.classList.remove('disabledButton');
+//             firstPage.disabled=false;
+//         }
+//         //Next and last page buttons
+//         const totalPages = await getPages(functionExpected);
+//         if(page === totalPages){
+//             nextPage.classList.remove('enabledButton');
+//             nextPage.classList.add('disabledButton');
+//             nextPage.disabled=true;
+//             lastPage.classList.remove('enabledButton');
+//             lastPage.classList.add('disabledButton');
+//             lastPage.disabled=true;
+//         }else{
+//             nextPage.classList.add('enabledButton');
+//             nextPage.classList.remove('disabledButton');
+//             nextPage.disabled=false;
+//             lastPage.classList.add('enabledButton');
+//             lastPage.classList.remove('disabledButton');
+//             lastPage.disabled=false;
+//         }
+//     }
+//     catch(error){
+//         alert("Error: There's a problem with the server")
+//         console.log(error);
+//     }
+// }
+// //Calculating the Total Pages
+// const getPages = async (functionExpected) => {
+//     let totalPages = 0;
+//     try{
+//         const response = await functionExpected;
+//         const limit = response.data.limit;
+//         const total = response.data.total;
+//         totalPages = total / limit;
+//         if(totalPages%1 !== 0){
+//             totalPages = Math.ceil(totalPages);
+//         }
+//         return totalPages;
+//     }
+//     catch(error){
+//         alert("Error: There's a problem with the server")
+//         console.log(error);
+//         return totalPages;
+//     }
+// }
+// //Next Page
+// const goNextPage = () => {
+//     page += 1;
+//     offset += 20; 
+// }
+// nextPage.addEventListener("click", async () => {
+//     try{
+//         if (cardId == "all") {
+//             const totalPages = await getPages(filters(offset));
+//             if(page <= totalPages){
+//                 await goNextPage();
+//                 createCards(offset, filters(offset)); 
+//                 disableButtons(filters(offset));
+//             }
+//         } else {
+//             const totalPages = await getPages(cardsResponse);
+//             if(page <= totalPages){
+//                 await goNextPage();
+//                 createCards(offset, callInfoMethods(offset)); 
+//                 disableButtons(cardsResponse);
+//             }
+//         }
+//     }
+//     catch(error){
+//         alert("Error: There's a problem with the server")
+//         console.log(error);
+//     }
+// });
+// //Previous Page
+// const goPreviousPage = () => {
+//     page -= 1;
+//     offset -= 20;  
+// }
+// previousPage.addEventListener("click", () => {
+//     if(page > 1){
+//         goPreviousPage();
+//         if (cardId == "all") {
+//             createCards(offset, filters(offset));
+//             disableButtons(filters(offset));
+//         } else {
+//             createCards(offset, callInfoMethods(offset));
+//             disableButtons(cardsResponse);
+//         }
+//     }
+// });
+// //First Page
+// const goFirstPage = () => {
+//     page = 1;
+//     offset = 0; 
+// }
+// firstPage.addEventListener("click", () => {
+//     if(page > 1){
+//         goFirstPage();
+//         if (cardId == "all"){
+//             createCards(offset, filters(offset)); 
+//             disableButtons(filters(offset));
+//         } else {
+//             createCards(offset, callInfoMethods(offset));
+//             disableButtons(cardsResponse);
+//         }
+//     }
+// });
+// //Last Page
+// const goLastPage = async () => {
+//     try{
+//         let totalPages;
+//         if (cardId == "all") {
+//             totalPages = await getPages(filters(offset));
+//         } else {
+//             totalPages = await getPages(cardsResponse);
+//         }
+//         page = totalPages;
+//         offset = (totalPages-1)*20;
+//     }
+//     catch(error){
+//         alert("Error: There's a problem with the server")
+//         console.log(error);
+//     }
+// }
+// lastPage.addEventListener("click", async () => { 
+//     try{
+//         if (cardId == "all") {
+//         const totalPages = await getPages(filters(offset));
+//             if(page <= totalPages){
+//                 await goLastPage();
+//                 createCards(offset, filters(offset));
+//                 disableButtons(filters(offset));
+//             }
+//         } else {
+//             const totalPages = await getPages(cardsResponse);
+//             if(page <= totalPages){
+//                 await goLastPage();
+//                 createCards(offset, callInfoMethods(offset));
+//                 disableButtons(cardsResponse);
+//             }
+//         }
+//     }
+//     catch(error){
+//         alert("Error: There's a problem with the server")
+//         console.log(error);
+//     }
+// });

@@ -1,67 +1,76 @@
 //INPUTS, SELECTORS
 const selType  = (<HTMLInputElement>document.getElementById("type"));
 const inpSearcher  = (<HTMLInputElement>document.getElementById("searcher"));
-
-//URL, METHODS
-const baseUrl = "http://gateway.marvel.com/";
-const apiKey ="3837d58127c2d8d73d7bda851100d507";
-const hash ="1fcfb0ff82123c45591cd5affb7b538f";
-const methodAllComics = `v1/public/comics?`;
-const methodAllCharacters = `/v1/public/characters?`;
-const comicsOrderBy = (<HTMLInputElement>document.getElementById("comicsOrderBy"));
-const charactersOrderBy = (<HTMLInputElement>document.getElementById('charactersOrderBy'));
-
-const getOrderParam = () =>{
-    let orderParam;
-    if(selType.value === "comics"){
-        orderParam = `&orderBy=${comicsOrderBy.value}`
-    }else{
-        orderParam = `&orderBy=${charactersOrderBy.value}`
-    }
-    return orderParam;
-}
-
-const getData = async (offset, method, param) => {
-    const response = await fetch(`${baseUrl}${method}${param}`);
-    const data = await response.json();
-    return data;
-};
-
-const filters = async (offset)=>{
-    let queryParams = "";
-    let response;
-    let baseParams = `ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`;
-    if(inpSearcher.value === ""){
-        queryParams = `${baseParams}${getOrderParam()}`;
-        if(selType.value === "comics"){
-            response = await getData(offset, methodAllComics, queryParams);
-        }else{
-            response = await getData(offset, methodAllCharacters, queryParams);
-        }    
-    }else{
-        if(selType.value === "comics"){
-            queryParams = `${baseParams}&titleStartsWith=${inpSearcher.value}${getOrderParam()}`
-            response = await getData(offset, methodAllComics, queryParams);
-        }else{
-            queryParams = `${baseParams}&nameStartsWith=${inpSearcher.value}${getOrderParam()}`
-            response = await getData(offset, methodAllCharacters, queryParams);
-        }
-    }
-    return response;
-}
-
+const orderComicsBy = (<HTMLInputElement>document.getElementById("orderComicsBy"));
+const orderCharactersBy = (<HTMLInputElement>document.getElementById('orderCharactersBy'));
 
 //CHANGE ORDER OPTIONS 
-selType.addEventListener('change', ()=>{
-    offset= 0;
-    page = 1;
-    initFirstPage();
+selType.addEventListener('change', () => {
     if(selType.value === "characters"){
-        comicsOrderBy.classList.add('d-none')
-        charactersOrderBy.classList.remove('d-none')
+        orderComicsBy.classList.add('d-none')
+        orderCharactersBy.classList.remove('d-none')
     }else{
-        comicsOrderBy.classList.remove('d-none')
-        charactersOrderBy.classList.add('d-none')
+        orderComicsBy.classList.remove('d-none')
+        orderCharactersBy.classList.add('d-none')
     }
 })
+
+//SEARCHER BUTTON
+//const formSearcher = document.getElementById("formSearcher");
+const formSearcher = document.getElementsByClassName("searcherContainer")[0];
+
+const search = (event) => {
+    event.preventDefault;
+    const formData = event.target;
+    const params = new URLSearchParams(window.location.search);
+
+    params.set('type', formData.type.value)
+    if(formData.type.value === "comics"){
+        console.log("comics")
+        params.set('orderBy', `${formData.orderComicsBy.value}`)
+    }else{
+        console.log("characters")
+        params.set('orderBy', `${formData.orderCharactersBy.value}`)
+    }
+    params.set('searchedTxt', `${formData.searchedTxt.value}`)
+
+    window.location.href = `index.html?${params.toString()}`;
+}
+
+formSearcher.addEventListener('submit', search);
+
+
+let offset = 0;
+//FILTERED DATA
+const getDataFiltered = async () => {
+    let response = [];
+    const params = new URLSearchParams(window.location.search);
+    let baseParams = `?ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`; //&orderBy=${params.get("orderBy")}
+
+    try{
+        if(params.get("searchedTxt") === ""){
+            if(params.get("type") === "comics"){
+                response= await getDataComics(baseParams);
+            }else{
+                response = await getDataCharacters(baseParams);
+            }    
+        }else{
+            if(params.get("type") === "comics"){
+                baseParams += `&titleStartsWith=${params.get("searchedTxt")}`
+                response = await getDataComics(baseParams);
+                console.log(response)
+            }else{
+                baseParams += `&nameStartsWith=${params.get("searchedTxt")}`
+                response = await getDataCharacters(baseParams);
+            }
+        }
+        createCards(response, params.get("type"));
+    }
+    catch(error){
+        alert("Error: There's a problem with the server")
+        console.log(error);
+    }
+}
+    
+getDataFiltered();
 

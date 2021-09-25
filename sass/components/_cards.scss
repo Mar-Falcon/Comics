@@ -42,7 +42,9 @@
     transform: translateY(-10px);
     color: $third-color;
 }
-
+.anchor{
+    text-decoration: none;
+}
 @media only screen and (min-width: 768px) {
     .cardsContainer{
         width: 100%;

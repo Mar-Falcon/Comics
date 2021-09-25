@@ -38,85 +38,87 @@ var _this = this;
 //INPUTS, SELECTORS
 var selType = document.getElementById("type");
 var inpSearcher = document.getElementById("searcher");
-//URL, METHODS
-var baseUrl = "http://gateway.marvel.com/";
-var apiKey = "3837d58127c2d8d73d7bda851100d507";
-var hash = "1fcfb0ff82123c45591cd5affb7b538f";
-var methodAllComics = "v1/public/comics?";
-var methodAllCharacters = "/v1/public/characters?";
-var comicsOrderBy = document.getElementById("comicsOrderBy");
-var charactersOrderBy = document.getElementById('charactersOrderBy');
-var getOrderParam = function () {
-    var orderParam;
-    if (selType.value === "comics") {
-        orderParam = "&orderBy=" + comicsOrderBy.value;
+var orderComicsBy = document.getElementById("orderComicsBy");
+var orderCharactersBy = document.getElementById('orderCharactersBy');
+//CHANGE ORDER OPTIONS 
+selType.addEventListener('change', function () {
+    if (selType.value === "characters") {
+        orderComicsBy.classList.add('d-none');
+        orderCharactersBy.classList.remove('d-none');
     }
     else {
-        orderParam = "&orderBy=" + charactersOrderBy.value;
+        orderComicsBy.classList.remove('d-none');
+        orderCharactersBy.classList.add('d-none');
     }
-    return orderParam;
+});
+//SEARCHER BUTTON
+//const formSearcher = document.getElementById("formSearcher");
+var formSearcher = document.getElementsByClassName("searcherContainer")[0];
+var search = function (event) {
+    event.preventDefault;
+    var formData = event.target;
+    var params = new URLSearchParams(window.location.search);
+    params.set('type', formData.type.value);
+    if (formData.type.value === "comics") {
+        console.log("comics");
+        params.set('orderBy', "" + formData.orderComicsBy.value);
+    }
+    else {
+        console.log("characters");
+        params.set('orderBy', "" + formData.orderCharactersBy.value);
+    }
+    params.set('searchedTxt', "" + formData.searchedTxt.value);
+    window.location.href = "index.html?" + params.toString();
 };
-var getData = function (offset, method, param) { return __awaiter(_this, void 0, void 0, function () {
-    var response, data;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, fetch("" + baseUrl + method + param)];
-            case 1:
-                response = _a.sent();
-                return [4 /*yield*/, response.json()];
-            case 2:
-                data = _a.sent();
-                return [2 /*return*/, data];
-        }
-    });
-}); };
-var filters = function (offset) { return __awaiter(_this, void 0, void 0, function () {
-    var queryParams, response, baseParams;
+formSearcher.addEventListener('submit', search);
+var offset = 0;
+//FILTERED DATA
+var getDataFiltered = function () { return __awaiter(_this, void 0, void 0, function () {
+    var response, params, baseParams, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                queryParams = "";
-                baseParams = "ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset;
-                if (!(inpSearcher.value === "")) return [3 /*break*/, 5];
-                queryParams = "" + baseParams + getOrderParam();
-                if (!(selType.value === "comics")) return [3 /*break*/, 2];
-                return [4 /*yield*/, getData(offset, methodAllComics, queryParams)];
+                response = [];
+                params = new URLSearchParams(window.location.search);
+                baseParams = "?ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset;
+                _a.label = 1;
             case 1:
+                _a.trys.push([1, 11, , 12]);
+                if (!(params.get("searchedTxt") === "")) return [3 /*break*/, 6];
+                if (!(params.get("type") === "comics")) return [3 /*break*/, 3];
+                return [4 /*yield*/, getDataComics(baseParams)];
+            case 2:
                 response = _a.sent();
-                return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, getData(offset, methodAllCharacters, queryParams)];
-            case 3:
+                return [3 /*break*/, 5];
+            case 3: return [4 /*yield*/, getDataCharacters(baseParams)];
+            case 4:
                 response = _a.sent();
-                _a.label = 4;
-            case 4: return [3 /*break*/, 9];
-            case 5:
-                if (!(selType.value === "comics")) return [3 /*break*/, 7];
-                queryParams = baseParams + "&titleStartsWith=" + inpSearcher.value + getOrderParam();
-                return [4 /*yield*/, getData(offset, methodAllComics, queryParams)];
+                _a.label = 5;
+            case 5: return [3 /*break*/, 10];
             case 6:
-                response = _a.sent();
-                return [3 /*break*/, 9];
+                if (!(params.get("type") === "comics")) return [3 /*break*/, 8];
+                baseParams += "&titleStartsWith=" + params.get("searchedTxt");
+                return [4 /*yield*/, getDataComics(baseParams)];
             case 7:
-                queryParams = baseParams + "&nameStartsWith=" + inpSearcher.value + getOrderParam();
-                return [4 /*yield*/, getData(offset, methodAllCharacters, queryParams)];
-            case 8:
                 response = _a.sent();
-                _a.label = 9;
-            case 9: return [2 /*return*/, response];
+                console.log(response);
+                return [3 /*break*/, 10];
+            case 8:
+                baseParams += "&nameStartsWith=" + params.get("searchedTxt");
+                return [4 /*yield*/, getDataCharacters(baseParams)];
+            case 9:
+                response = _a.sent();
+                _a.label = 10;
+            case 10:
+                createCards(response, params.get("type"));
+                return [3 /*break*/, 12];
+            case 11:
+                error_1 = _a.sent();
+                alert("Error: There's a problem with the server");
+                console.log(error_1);
+                return [3 /*break*/, 12];
+            case 12: return [2 /*return*/];
         }
     });
 }); };
-//CHANGE ORDER OPTIONS 
-selType.addEventListener('change', function () {
-    offset = 0;
-    page = 1;
-    initFirstPage();
-    if (selType.value === "characters") {
-        comicsOrderBy.classList.add('d-none');
-        charactersOrderBy.classList.remove('d-none');
-    }
-    else {
-        comicsOrderBy.classList.remove('d-none');
-        charactersOrderBy.classList.add('d-none');
-    }
-});
+getDataFiltered();
