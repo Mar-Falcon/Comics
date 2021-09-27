@@ -39,11 +39,14 @@
     }
 }
 .card:hover{
-    transform: translateY(-10px);
-    color: $third-color;
+    transform: translateY(-10px);    
 }
 .anchor{
     text-decoration: none;
+    color: $primary-color;
+}
+.anchor:hover{    
+    color: $third-color;
 }
 @media only screen and (min-width: 768px) {
     .cardsContainer{
