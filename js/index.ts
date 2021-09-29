@@ -18,14 +18,14 @@ const createCards = (response, type) => {
             const card = document.createElement("div");
             const img = document.createElement("img");
             const title = document.createElement("h3");  
-            a.setAttribute("href", `details.html?id=${element.id}&type=${type}`);       
+            a.setAttribute("href", `details.html?id=${element.id}&type=${type}&page=1`);       
             img.setAttribute("src", `${element.thumbnail.path}.${element.thumbnail.extension}`);
             let titleTxt = document.createTextNode(element.title || element.name);
 
             img.classList.add("card__img");
             title.classList.add("card__h3");        
             card.classList.add("card");
-            a.classList.add("anchor")
+            a.classList.add("anchor");
 
             a.appendChild(img);
             title.appendChild(titleTxt);
@@ -73,162 +73,111 @@ const getDataCharacters= async (param): Promise<Character[]> => {
     }
 };
 
-//CARDS INITIALIZATION
-const initFirstPage = async () => {
-    offset = 0;
-    let baseParams = `?ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}&orderBy=title`;
-    const response = await getDataComics(baseParams);
-    createCards(response, "comics");
+//Calculating the Total Pages
+const getPages = async (functionExpected) => {
+    let totalPages = 0;
+    try{
+        const response = await functionExpected;
+        const limit = response.data.limit;
+        const total = response.data.total;
+        totalPages = total / limit;
+        if(totalPages%1 !== 0){
+            totalPages = Math.ceil(totalPages);
+        }
+        return totalPages;
+    }
+    catch(error){
+        alert("Error: There's a problem with the server")
+        console.log(error);
+        return totalPages;
+    }
 }
 
-const params = new URLSearchParams(window.location.search);
+//Disabling buttons
+const disableButtons = async (functionExpected) => {
+    const params = new URLSearchParams(window.location.search);
+    try{
+        //Previous and first page buttons
+        if(parseInt(params.get("page")) === 1){
+            previousPage.classList.remove('enabledButton');
+            previousPage.classList.add('disabledButton');
+            previousPage.disabled=true;
+            firstPage.classList.remove('enabledButton');
+            firstPage.classList.add('disabledButton');
+            firstPage.disabled=true;
+        }else{
+            previousPage.classList.add('enabledButton');
+            previousPage.classList.remove('disabledButton');
+            previousPage.disabled=false;
+            firstPage.classList.add('enabledButton');
+            firstPage.classList.remove('disabledButton');
+            firstPage.disabled=false;
+        }
 
-if(window.location.href === "http://127.0.0.1:5500/index.html"){
-    initFirstPage();
+        //Next and last page buttons
+        const totalPages = await getPages(functionExpected);
+        if(parseInt(params.get("page")) === totalPages){
+            nextPage.classList.remove('enabledButton');
+            nextPage.classList.add('disabledButton');
+            nextPage.disabled=true;
+            lastPage.classList.remove('enabledButton');
+            lastPage.classList.add('disabledButton');
+            lastPage.disabled=true;
+        }else{
+            nextPage.classList.add('enabledButton');
+            nextPage.classList.remove('disabledButton');
+            nextPage.disabled=false;
+            lastPage.classList.add('enabledButton');
+            lastPage.classList.remove('disabledButton');
+            lastPage.disabled=false;
+        }
+    }
+    catch(error){
+        alert("Error: There's a problem with the server")
+        console.log(error);
+    }
 }
 
-
-// TO CHECK
 // //PAGINATION
+let baseParams = `?ts=1&apikey=${apiKey}&hash=${hash}`;
+const previousPage = (<HTMLButtonElement>document.getElementById("previousPage"));
+const nextPage = (<HTMLButtonElement>document.getElementById("nextPage"));
+const firstPage = (<HTMLButtonElement>document.getElementById("firstPage"));
+const lastPage = (<HTMLButtonElement>document.getElementById("lastPage"));
 
-// const previousPage = (<HTMLButtonElement>document.getElementById("previousPage"));
-// const nextPage = (<HTMLButtonElement>document.getElementById("nextPage"));
-// const firstPage = (<HTMLButtonElement>document.getElementById("firstPage"));
-// const lastPage = (<HTMLButtonElement>document.getElementById("lastPage"));
+nextPage.addEventListener("click", () => {
+    const params = new URLSearchParams(window.location.search);
+    let page;
+    if(params.get("page")){
+        page = parseInt(params.get("page"));
+    } else {
+        page = 1;
+    }
+    let offset = page*20;
+    params.set("offset", offset.toString());
+    params.set("page", (page + 1).toString())
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
+});
 
-// //Disabling buttons
-// const disableButtons = async (functionExpected) => {
-//     try{
-//         //Previous and first page buttons
-//         if(page === 1){
-//             previousPage.classList.remove('enabledButton');
-//             previousPage.classList.add('disabledButton');
-//             previousPage.disabled=true;
-//             firstPage.classList.remove('enabledButton');
-//             firstPage.classList.add('disabledButton');
-//             firstPage.disabled=true;
-//         }else{
-//             previousPage.classList.add('enabledButton');
-//             previousPage.classList.remove('disabledButton');
-//             previousPage.disabled=false;
-//             firstPage.classList.add('enabledButton');
-//             firstPage.classList.remove('disabledButton');
-//             firstPage.disabled=false;
-//         }
+//Previous Page
+previousPage.addEventListener("click", () => {
+    const params = new URLSearchParams(window.location.search);
+    let page = parseInt(params.get("page"));
+    let offset = (page-2)*20;
+    params.set("offset", offset.toString());
+    params.set("page", (page - 1).toString())
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
+});
 
-//         //Next and last page buttons
-//         const totalPages = await getPages(functionExpected);
-//         if(page === totalPages){
-//             nextPage.classList.remove('enabledButton');
-//             nextPage.classList.add('disabledButton');
-//             nextPage.disabled=true;
-//             lastPage.classList.remove('enabledButton');
-//             lastPage.classList.add('disabledButton');
-//             lastPage.disabled=true;
-//         }else{
-//             nextPage.classList.add('enabledButton');
-//             nextPage.classList.remove('disabledButton');
-//             nextPage.disabled=false;
-//             lastPage.classList.add('enabledButton');
-//             lastPage.classList.remove('disabledButton');
-//             lastPage.disabled=false;
-//         }
-//     }
-//     catch(error){
-//         alert("Error: There's a problem with the server")
-//         console.log(error);
-//     }
-// }
+//First Page
+firstPage.addEventListener("click", () => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("offset", "0");
+    params.set("page", "1")
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
+});
 
-// //Calculating the Total Pages
-// const getPages = async (functionExpected) => {
-//     let totalPages = 0;
-//     try{
-//         const response = await functionExpected;
-//         const limit = response.data.limit;
-//         const total = response.data.total;
-//         totalPages = total / limit;
-//         if(totalPages%1 !== 0){
-//             totalPages = Math.ceil(totalPages);
-//         }
-//         return totalPages;
-//     }
-//     catch(error){
-//         alert("Error: There's a problem with the server")
-//         console.log(error);
-//         return totalPages;
-//     }
-// }
-
-// //Next Page
-// const goNextPage = () => {
-//     page += 1;
-//     offset += 20; 
-// }
-
-// nextPage.addEventListener("click", async () => {
-//     try{
-//         if (cardId == "all") {
-//             const totalPages = await getPages(filters(offset));
-//             if(page <= totalPages){
-//                 await goNextPage();
-//                 createCards(offset, filters(offset)); 
-//                 disableButtons(filters(offset));
-//             }
-//         } else {
-//             const totalPages = await getPages(cardsResponse);
-//             if(page <= totalPages){
-//                 await goNextPage();
-//                 createCards(offset, callInfoMethods(offset)); 
-//                 disableButtons(cardsResponse);
-//             }
-//         }
-//     }
-//     catch(error){
-//         alert("Error: There's a problem with the server")
-//         console.log(error);
-//     }
-// });
-
-// //Previous Page
-// const goPreviousPage = () => {
-//     page -= 1;
-//     offset -= 20;  
-// }
-
-// previousPage.addEventListener("click", () => {
-//     if(page > 1){
-//         goPreviousPage();
-//         if (cardId == "all") {
-//             createCards(offset, filters(offset));
-//             disableButtons(filters(offset));
-//         } else {
-//             createCards(offset, callInfoMethods(offset));
-//             disableButtons(cardsResponse);
-//         }
-//     }
-// });
-
-// //First Page
-// const goFirstPage = () => {
-//     page = 1;
-//     offset = 0; 
-// }
-
-// firstPage.addEventListener("click", () => {
-//     if(page > 1){
-//         goFirstPage();
-//         if (cardId == "all"){
-//             createCards(offset, filters(offset)); 
-//             disableButtons(filters(offset));
-//         } else {
-//             createCards(offset, callInfoMethods(offset));
-//             disableButtons(cardsResponse);
-//         }
-//     }
-// });
-
-// //Last Page
+//Last Page
 // const goLastPage = async () => {
 //     try{
 //         let totalPages;

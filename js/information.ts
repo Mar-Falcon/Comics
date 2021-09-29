@@ -1,5 +1,6 @@
 const cardsSectionSubTitle = document.getElementById('cardsSectionSubTitle');
 const cardInfo = document.getElementById('cardInfo');
+const pagination = document.getElementById('pagination');
 
 //Converter Date
 const convertDateFormat = (date) => {
@@ -79,8 +80,7 @@ const createComicInfo = (element) => {
         }        
         return writer;
     }
-    const writerData = element.creators.items.map(formatName).join("");    
-    console.log(element.creators.items[0]);    
+    const writerData = element.creators.items.map(formatName).join("");        
     const writerTxt = document.createTextNode(writerData);    
     writer.appendChild(writerTxt);
     info.appendChild(writer);
@@ -104,8 +104,14 @@ const cardsRelated = (response, type) => {
         const txtNotResults = document.createTextNode('No results found');
         notResults.appendChild(txtNotResults);
         cardsContainer.appendChild(notResults);
+        pagination.classList.add('d-none');
     }else{
-        createCards(response, type);
+        pagination.classList.remove('d-none');
+        if(type === "comics") {
+            createCards(response, "characters");
+        } else {
+            createCards(response, "comics");
+        }
     }
 }
 
@@ -113,9 +119,9 @@ const cardsRelated = (response, type) => {
 //Generate Card Information Page
 const getCardInfo = async () => {
     let cardsResponse = [];
-    offset = 0;
     const params = new URLSearchParams(window.location.search);
-    let baseParams = `?ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`; //&orderBy=${params.get("orderBy")}
+    let offset = params.get("offset");
+    let baseParams = `?ts=1&apikey=${apiKey}&hash=${hash}&offset=${offset}`;
     
     try{
         if(params.get("type") === "comics"){
@@ -126,18 +132,17 @@ const getCardInfo = async () => {
             cardsResponse = await getDataComics(methodComicIdCharacters);
             cardsSectionSubTitle.innerHTML = "Characters";
             createComicInfo(dataComic[0]);
-
         } else {
             const methodCharacterId = `/${params.get("id")}${baseParams}`;
             const methodCharacterIdComics = `/${params.get("id")}/comics${baseParams}`;
             const characterResponse = await getDataCharacters(methodCharacterId);
-            console.log(`methodCharacterIdComics: ${methodCharacterIdComics}`)
             const dataCharacter = characterResponse.data.results;
             cardsResponse = await getDataCharacters(methodCharacterIdComics);
             cardsSectionSubTitle.innerHTML = "Comics";
             createCharacterInfo(dataCharacter[0]);
         }
         cardsRelated(cardsResponse, params.get("type"));
+        disableButtons(cardsResponse);
     }
     catch(error){
         alert("Error: There's a problem with the server")

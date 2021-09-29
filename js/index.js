@@ -52,7 +52,7 @@ var createCards = function (response, type) {
         var card = document.createElement("div");
         var img = document.createElement("img");
         var title = document.createElement("h3");
-        a.setAttribute("href", "details.html?id=" + element.id + "&type=" + type);
+        a.setAttribute("href", "details.html?id=" + element.id + "&type=" + type + "&page=1");
         img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
         var titleTxt = document.createTextNode(element.title || element.name);
         img.classList.add("card__img");
@@ -123,156 +123,128 @@ var getDataCharacters = function (param) { return __awaiter(_this, void 0, void 
         }
     });
 }); };
-//CARDS INITIALIZATION
-var initFirstPage = function () { return __awaiter(_this, void 0, void 0, function () {
-    var baseParams, response;
+//Calculating the Total Pages
+var getPages = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
+    var totalPages, response, limit, total, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                offset = 0;
-                baseParams = "?ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset + "&orderBy=title";
-                return [4 /*yield*/, getDataComics(baseParams)];
+                totalPages = 0;
+                _a.label = 1;
             case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, functionExpected];
+            case 2:
                 response = _a.sent();
-                createCards(response, "comics");
-                return [2 /*return*/];
+                limit = response.data.limit;
+                total = response.data.total;
+                totalPages = total / limit;
+                if (totalPages % 1 !== 0) {
+                    totalPages = Math.ceil(totalPages);
+                }
+                return [2 /*return*/, totalPages];
+            case 3:
+                error_3 = _a.sent();
+                alert("Error: There's a problem with the server");
+                console.log(error_3);
+                return [2 /*return*/, totalPages];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
-var params = new URLSearchParams(window.location.search);
-if (window.location.href === "http://127.0.0.1:5500/index.html") {
-    initFirstPage();
-}
-// TO CHECK
+//Disabling buttons
+var disableButtons = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
+    var params, totalPages, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                params = new URLSearchParams(window.location.search);
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                //Previous and first page buttons
+                if (parseInt(params.get("page")) === 1) {
+                    previousPage.classList.remove('enabledButton');
+                    previousPage.classList.add('disabledButton');
+                    previousPage.disabled = true;
+                    firstPage.classList.remove('enabledButton');
+                    firstPage.classList.add('disabledButton');
+                    firstPage.disabled = true;
+                }
+                else {
+                    previousPage.classList.add('enabledButton');
+                    previousPage.classList.remove('disabledButton');
+                    previousPage.disabled = false;
+                    firstPage.classList.add('enabledButton');
+                    firstPage.classList.remove('disabledButton');
+                    firstPage.disabled = false;
+                }
+                return [4 /*yield*/, getPages(functionExpected)];
+            case 2:
+                totalPages = _a.sent();
+                if (parseInt(params.get("page")) === totalPages) {
+                    nextPage.classList.remove('enabledButton');
+                    nextPage.classList.add('disabledButton');
+                    nextPage.disabled = true;
+                    lastPage.classList.remove('enabledButton');
+                    lastPage.classList.add('disabledButton');
+                    lastPage.disabled = true;
+                }
+                else {
+                    nextPage.classList.add('enabledButton');
+                    nextPage.classList.remove('disabledButton');
+                    nextPage.disabled = false;
+                    lastPage.classList.add('enabledButton');
+                    lastPage.classList.remove('disabledButton');
+                    lastPage.disabled = false;
+                }
+                return [3 /*break*/, 4];
+            case 3:
+                error_4 = _a.sent();
+                alert("Error: There's a problem with the server");
+                console.log(error_4);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
 // //PAGINATION
-// const previousPage = (<HTMLButtonElement>document.getElementById("previousPage"));
-// const nextPage = (<HTMLButtonElement>document.getElementById("nextPage"));
-// const firstPage = (<HTMLButtonElement>document.getElementById("firstPage"));
-// const lastPage = (<HTMLButtonElement>document.getElementById("lastPage"));
-// //Disabling buttons
-// const disableButtons = async (functionExpected) => {
-//     try{
-//         //Previous and first page buttons
-//         if(page === 1){
-//             previousPage.classList.remove('enabledButton');
-//             previousPage.classList.add('disabledButton');
-//             previousPage.disabled=true;
-//             firstPage.classList.remove('enabledButton');
-//             firstPage.classList.add('disabledButton');
-//             firstPage.disabled=true;
-//         }else{
-//             previousPage.classList.add('enabledButton');
-//             previousPage.classList.remove('disabledButton');
-//             previousPage.disabled=false;
-//             firstPage.classList.add('enabledButton');
-//             firstPage.classList.remove('disabledButton');
-//             firstPage.disabled=false;
-//         }
-//         //Next and last page buttons
-//         const totalPages = await getPages(functionExpected);
-//         if(page === totalPages){
-//             nextPage.classList.remove('enabledButton');
-//             nextPage.classList.add('disabledButton');
-//             nextPage.disabled=true;
-//             lastPage.classList.remove('enabledButton');
-//             lastPage.classList.add('disabledButton');
-//             lastPage.disabled=true;
-//         }else{
-//             nextPage.classList.add('enabledButton');
-//             nextPage.classList.remove('disabledButton');
-//             nextPage.disabled=false;
-//             lastPage.classList.add('enabledButton');
-//             lastPage.classList.remove('disabledButton');
-//             lastPage.disabled=false;
-//         }
-//     }
-//     catch(error){
-//         alert("Error: There's a problem with the server")
-//         console.log(error);
-//     }
-// }
-// //Calculating the Total Pages
-// const getPages = async (functionExpected) => {
-//     let totalPages = 0;
-//     try{
-//         const response = await functionExpected;
-//         const limit = response.data.limit;
-//         const total = response.data.total;
-//         totalPages = total / limit;
-//         if(totalPages%1 !== 0){
-//             totalPages = Math.ceil(totalPages);
-//         }
-//         return totalPages;
-//     }
-//     catch(error){
-//         alert("Error: There's a problem with the server")
-//         console.log(error);
-//         return totalPages;
-//     }
-// }
-// //Next Page
-// const goNextPage = () => {
-//     page += 1;
-//     offset += 20; 
-// }
-// nextPage.addEventListener("click", async () => {
-//     try{
-//         if (cardId == "all") {
-//             const totalPages = await getPages(filters(offset));
-//             if(page <= totalPages){
-//                 await goNextPage();
-//                 createCards(offset, filters(offset)); 
-//                 disableButtons(filters(offset));
-//             }
-//         } else {
-//             const totalPages = await getPages(cardsResponse);
-//             if(page <= totalPages){
-//                 await goNextPage();
-//                 createCards(offset, callInfoMethods(offset)); 
-//                 disableButtons(cardsResponse);
-//             }
-//         }
-//     }
-//     catch(error){
-//         alert("Error: There's a problem with the server")
-//         console.log(error);
-//     }
-// });
-// //Previous Page
-// const goPreviousPage = () => {
-//     page -= 1;
-//     offset -= 20;  
-// }
-// previousPage.addEventListener("click", () => {
-//     if(page > 1){
-//         goPreviousPage();
-//         if (cardId == "all") {
-//             createCards(offset, filters(offset));
-//             disableButtons(filters(offset));
-//         } else {
-//             createCards(offset, callInfoMethods(offset));
-//             disableButtons(cardsResponse);
-//         }
-//     }
-// });
-// //First Page
-// const goFirstPage = () => {
-//     page = 1;
-//     offset = 0; 
-// }
-// firstPage.addEventListener("click", () => {
-//     if(page > 1){
-//         goFirstPage();
-//         if (cardId == "all"){
-//             createCards(offset, filters(offset)); 
-//             disableButtons(filters(offset));
-//         } else {
-//             createCards(offset, callInfoMethods(offset));
-//             disableButtons(cardsResponse);
-//         }
-//     }
-// });
-// //Last Page
+var baseParams = "?ts=1&apikey=" + apiKey + "&hash=" + hash;
+var previousPage = document.getElementById("previousPage");
+var nextPage = document.getElementById("nextPage");
+var firstPage = document.getElementById("firstPage");
+var lastPage = document.getElementById("lastPage");
+nextPage.addEventListener("click", function () {
+    var params = new URLSearchParams(window.location.search);
+    var page;
+    if (params.get("page")) {
+        page = parseInt(params.get("page"));
+    }
+    else {
+        page = 1;
+    }
+    var offset = page * 20;
+    params.set("offset", offset.toString());
+    params.set("page", (page + 1).toString());
+    window.location.href = window.location.pathname + "?" + params.toString();
+});
+//Previous Page
+previousPage.addEventListener("click", function () {
+    var params = new URLSearchParams(window.location.search);
+    var page = parseInt(params.get("page"));
+    var offset = (page - 2) * 20;
+    params.set("offset", offset.toString());
+    params.set("page", (page - 1).toString());
+    window.location.href = window.location.pathname + "?" + params.toString();
+});
+//First Page
+firstPage.addEventListener("click", function () {
+    var params = new URLSearchParams(window.location.search);
+    params.set("offset", "0");
+    params.set("page", "1");
+    window.location.href = window.location.pathname + "?" + params.toString();
+});
+//Last Page
 // const goLastPage = async () => {
 //     try{
 //         let totalPages;

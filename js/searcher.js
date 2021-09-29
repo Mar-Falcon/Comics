@@ -52,40 +52,36 @@ selType.addEventListener('change', function () {
     }
 });
 //SEARCHER BUTTON
-//const formSearcher = document.getElementById("formSearcher");
 var formSearcher = document.getElementsByClassName("searcherContainer")[0];
 var search = function (event) {
-    event.preventDefault;
+    event.preventDefault();
     var formData = event.target;
-    var params = new URLSearchParams(window.location.search);
+    var params = new URLSearchParams();
     params.set('type', formData.type.value);
     if (formData.type.value === "comics") {
-        console.log("comics");
         params.set('orderBy', "" + formData.orderComicsBy.value);
     }
     else {
-        console.log("characters");
         params.set('orderBy', "" + formData.orderCharactersBy.value);
     }
     params.set('searchedTxt', "" + formData.searchedTxt.value);
+    params.set('page', '1');
     window.location.href = "index.html?" + params.toString();
 };
 formSearcher.addEventListener('submit', search);
-var offset = 0;
 //FILTERED DATA
-var getDataFiltered = function () { return __awaiter(_this, void 0, void 0, function () {
-    var response, params, baseParams, error_1;
+var getDataFiltered = function (offset, searchedTxt, type, orderBy) { return __awaiter(_this, void 0, void 0, function () {
+    var response, baseParams, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 response = [];
-                params = new URLSearchParams(window.location.search);
-                baseParams = "?ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset;
+                baseParams = "?ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset + "&orderBy=" + orderBy;
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 11, , 12]);
-                if (!(params.get("searchedTxt") === "")) return [3 /*break*/, 6];
-                if (!(params.get("type") === "comics")) return [3 /*break*/, 3];
+                if (!(searchedTxt === "" || searchedTxt === null)) return [3 /*break*/, 6];
+                if (!(type === "comics")) return [3 /*break*/, 3];
                 return [4 /*yield*/, getDataComics(baseParams)];
             case 2:
                 response = _a.sent();
@@ -96,21 +92,21 @@ var getDataFiltered = function () { return __awaiter(_this, void 0, void 0, func
                 _a.label = 5;
             case 5: return [3 /*break*/, 10];
             case 6:
-                if (!(params.get("type") === "comics")) return [3 /*break*/, 8];
-                baseParams += "&titleStartsWith=" + params.get("searchedTxt");
+                if (!(type === "comics")) return [3 /*break*/, 8];
+                baseParams += "&titleStartsWith=" + searchedTxt;
                 return [4 /*yield*/, getDataComics(baseParams)];
             case 7:
                 response = _a.sent();
-                console.log(response);
                 return [3 /*break*/, 10];
             case 8:
-                baseParams += "&nameStartsWith=" + params.get("searchedTxt");
+                baseParams += "&nameStartsWith=" + searchedTxt;
                 return [4 /*yield*/, getDataCharacters(baseParams)];
             case 9:
                 response = _a.sent();
                 _a.label = 10;
             case 10:
-                createCards(response, params.get("type"));
+                createCards(response, type);
+                disableButtons(response);
                 return [3 /*break*/, 12];
             case 11:
                 error_1 = _a.sent();
@@ -121,4 +117,16 @@ var getDataFiltered = function () { return __awaiter(_this, void 0, void 0, func
         }
     });
 }); };
-getDataFiltered();
+//LOAD INIT PAGE AND SEARCHED PAGE
+var params = new URLSearchParams(window.location.search);
+var searchedTxt = params.get("searchedTxt");
+var type = params.get("type");
+var orderBy = params.get("orderBy");
+var offset = params.get("offset");
+if (window.location.search === "") {
+    location.replace(window.location.pathname + "?type=comics&orderBy=title&searchedTxt=&page=1");
+    getDataFiltered(offset || "0", searchedTxt || "", type || "comics", orderBy || "title");
+}
+else {
+    getDataFiltered(offset, searchedTxt, type, orderBy);
+}

@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 var cardsSectionSubTitle = document.getElementById('cardsSectionSubTitle');
 var cardInfo = document.getElementById('cardInfo');
+var pagination = document.getElementById('pagination');
 //Converter Date
 var convertDateFormat = function (date) {
     return new Intl.DateTimeFormat('es-AR').format(new Date(date));
@@ -111,7 +112,6 @@ var createComicInfo = function (element) {
         return writer;
     };
     var writerData = element.creators.items.map(formatName).join("");
-    console.log(element.creators.items[0]);
     var writerTxt = document.createTextNode(writerData);
     writer.appendChild(writerTxt);
     info.appendChild(writer);
@@ -132,20 +132,27 @@ var cardsRelated = function (response, type) {
         var txtNotResults = document.createTextNode('No results found');
         notResults.appendChild(txtNotResults);
         cardsContainer.appendChild(notResults);
+        pagination.classList.add('d-none');
     }
     else {
-        createCards(response, type);
+        pagination.classList.remove('d-none');
+        if (type === "comics") {
+            createCards(response, "characters");
+        }
+        else {
+            createCards(response, "comics");
+        }
     }
 };
 //Generate Card Information Page
 var getCardInfo = function () { return __awaiter(_this, void 0, void 0, function () {
-    var cardsResponse, params, baseParams, methodComicId, methodComicIdCharacters, comicResponse, dataComic, methodCharacterId, methodCharacterIdComics, characterResponse, dataCharacter, error_1;
+    var cardsResponse, params, offset, baseParams, methodComicId, methodComicIdCharacters, comicResponse, dataComic, methodCharacterId, methodCharacterIdComics, characterResponse, dataCharacter, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 cardsResponse = [];
-                offset = 0;
                 params = new URLSearchParams(window.location.search);
+                offset = params.get("offset");
                 baseParams = "?ts=1&apikey=" + apiKey + "&hash=" + hash + "&offset=" + offset;
                 _a.label = 1;
             case 1:
@@ -169,7 +176,6 @@ var getCardInfo = function () { return __awaiter(_this, void 0, void 0, function
                 return [4 /*yield*/, getDataCharacters(methodCharacterId)];
             case 5:
                 characterResponse = _a.sent();
-                console.log("methodCharacterIdComics: " + methodCharacterIdComics);
                 dataCharacter = characterResponse.data.results;
                 return [4 /*yield*/, getDataCharacters(methodCharacterIdComics)];
             case 6:
@@ -179,6 +185,7 @@ var getCardInfo = function () { return __awaiter(_this, void 0, void 0, function
                 _a.label = 7;
             case 7:
                 cardsRelated(cardsResponse, params.get("type"));
+                disableButtons(cardsResponse);
                 return [3 /*break*/, 9];
             case 8:
                 error_1 = _a.sent();
