@@ -42,8 +42,8 @@ const createCards = (response, type) => {
 
 //URL, METHODS
 const baseUrl = "http://gateway.marvel.com/";
-const apiKey ="3837d58127c2d8d73d7bda851100d507";
-const hash ="1fcfb0ff82123c45591cd5affb7b538f";
+const apiKey = "72e83d5581cbf2c4cd969d22f6886887";
+const hash = "e9c7617587293503cdcaa15162cc303b";
 
 
 //GET DATA
