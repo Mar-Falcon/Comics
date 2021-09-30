@@ -74,9 +74,9 @@ var createCards = function (response, type) {
     });
 };
 //URL, METHODS
-var baseUrl = "http://gateway.marvel.com/";
-var apiKey = "3837d58127c2d8d73d7bda851100d507";
-var hash = "1fcfb0ff82123c45591cd5affb7b538f";
+var baseUrl = "https://gateway.marvel.com/";
+var apiKey = "72e83d5581cbf2c4cd969d22f6886887";
+var hash = "e9c7617587293503cdcaa15162cc303b";
 //GET DATA
 //Get Data Comics
 var getDataComics = function (param) { return __awaiter(_this, void 0, void 0, function () {

@@ -41,7 +41,7 @@ const createCards = (response, type) => {
 }
 
 //URL, METHODS
-const baseUrl = "http://gateway.marvel.com/";
+const baseUrl = "https://gateway.marvel.com/";
 const apiKey = "72e83d5581cbf2c4cd969d22f6886887";
 const hash = "e9c7617587293503cdcaa15162cc303b";
 
