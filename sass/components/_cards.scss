@@ -25,6 +25,7 @@
     cursor: pointer;
     &__img{
         width: $wide-cover;
+        height: 400px;
         box-shadow: 0 26px 24px -16px rgba(0, 0, 0, 0.40);
         transform: translateY(0);
         transition: 0.2s;       
@@ -36,13 +37,21 @@
     @media only screen and (min-width: 768px){
         width: calc(100% / 5 - 2 * 10px);
         margin: 0 10px 40px;
+        &__img{
+            height: 320px;
+        }
     }
 }
 .card:hover{
-    transform: translateY(-10px);
+    transform: translateY(-10px);    
+}
+.anchor{
+    text-decoration: none;
+    color: $primary-color;
+}
+.anchor:hover{    
     color: $third-color;
 }
-
 @media only screen and (min-width: 768px) {
     .cardsContainer{
         width: 100%;

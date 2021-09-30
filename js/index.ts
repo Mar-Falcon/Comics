@@ -1,7 +1,5 @@
 const cardsContainer = document.getElementById("cardsContainer");
-let offset = 0;
-let page = 1;
-let cardId = "all";
+let totalPages;
 
 //Number of Cards - Results
 const updateResultsCount = (count) => {     
@@ -10,57 +8,99 @@ const updateResultsCount = (count) => {
 }
 
 //Creating Cards
-const createCards = async (offset, expectedfunction) => {
-    try{
+const createCards = (response, type) => {
         cardsContainer.innerHTML = "";
-        let response = await expectedfunction;    
         let total = response.data.total;
         updateResultsCount(total);
-        const data = response.data.results;   
+        const data = response.data.results; 
+        console.log(response)  
         data.forEach(element => {
+            const a = document.createElement("a");
             const card = document.createElement("div");
             const img = document.createElement("img");
-            const title = document.createElement("h3");        
-            img.setAttribute("src", `${element.thumbnail.path}.${element.thumbnail.extension}`);
-            let titleTxt;
-            if(selType.value === "comics"){     //<-- Comic title
-                titleTxt = document.createTextNode(element.title || element.name);            
-            }else{                              //<-- Character name
-                titleTxt = document.createTextNode(element.name || element.title);           
+            const title = document.createElement("h3");  
+            a.setAttribute("href", `details.html?id=${element.id}&type=${type}&page=1`); 
+            if (element.thumbnail.path === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available"){
+                img.setAttribute("src", `noImage.jpg`);
+            } else {
+                img.setAttribute("src", `${element.thumbnail.path}.${element.thumbnail.extension}`);
             }
+            let titleTxt = document.createTextNode(element.title || element.name);
+
             img.classList.add("card__img");
             title.classList.add("card__h3");        
             card.classList.add("card");
-            card.dataset.id = element.id;
-            img.dataset.id = element.id;
-            title.dataset.id = element.id;
+            a.classList.add("anchor");
 
-            card.appendChild(img);
+            a.appendChild(img);
             title.appendChild(titleTxt);
-
-            card.appendChild(title);
+            a.appendChild(title);
+            card.appendChild(a);
             cardsContainer.appendChild(card);        
         });      
+}
+
+//URL, METHODS
+const baseUrl = "http://gateway.marvel.com/";
+const apiKey ="3837d58127c2d8d73d7bda851100d507";
+const hash ="1fcfb0ff82123c45591cd5affb7b538f";
+
+
+//GET DATA
+
+//Get Data Comics
+const getDataComics = async (param): Promise<Comic[]> => {
+    let data = [];
+    try{
+        const response = await fetch(`${baseUrl}v1/public/comics${param}`);
+        data = await response.json();
+        return data;
     }
     catch(error){
-        alert("Error: There's a problem with the server")
         console.log(error);
+        return data;
+    }
+};
+
+//Get Data Characters
+const getDataCharacters= async (param): Promise<Character[]> => {
+    let data = [];
+    try{
+        const response = await fetch(`${baseUrl}/v1/public/characters${param}`);
+        data = await response.json();
+        return data;
+    }
+    catch(error){
+        console.log(error);
+        return data;
+    }
+};
+
+//Calculating the Total Pages
+const getPages = async (functionExpected) => {
+    let totalPages = 0;
+    try{
+        const response = await functionExpected;
+        const limit = response.data.limit;
+        const total = response.data.total;
+        totalPages = total / limit;
+        if(totalPages%1 !== 0){
+            totalPages = Math.ceil(totalPages);
+        }
+        return totalPages;
+    }
+    catch(error){
+        console.log(error);
+        return totalPages;
     }
 }
 
-
-//PAGINATION
-
-const previousPage = (<HTMLButtonElement>document.getElementById("previousPage"));
-const nextPage = (<HTMLButtonElement>document.getElementById("nextPage"));
-const firstPage = (<HTMLButtonElement>document.getElementById("firstPage"));
-const lastPage = (<HTMLButtonElement>document.getElementById("lastPage"));
-
 //Disabling buttons
 const disableButtons = async (functionExpected) => {
+    const params = new URLSearchParams(window.location.search);
     try{
         //Previous and first page buttons
-        if(page === 1){
+        if(parseInt(params.get("page")) === 1){
             previousPage.classList.remove('enabledButton');
             previousPage.classList.add('disabledButton');
             previousPage.disabled=true;
@@ -77,8 +117,8 @@ const disableButtons = async (functionExpected) => {
         }
 
         //Next and last page buttons
-        const totalPages = await getPages(functionExpected);
-        if(page === totalPages){
+        totalPages = await getPages(functionExpected);
+        if(parseInt(params.get("page")) === totalPages){
             nextPage.classList.remove('enabledButton');
             nextPage.classList.add('disabledButton');
             nextPage.disabled=true;
@@ -95,159 +135,50 @@ const disableButtons = async (functionExpected) => {
         }
     }
     catch(error){
-        alert("Error: There's a problem with the server")
         console.log(error);
     }
 }
 
-//Calculating the Total Pages
-const getPages = async (functionExpected) => {
-    let totalPages = 0;
-    try{
-        const response = await functionExpected;
-        const limit = response.data.limit;
-        const total = response.data.total;
-        totalPages = total / limit;
-        if(totalPages%1 !== 0){
-            totalPages = Math.ceil(totalPages);
-        }
-        return totalPages;
-    }
-    catch(error){
-        alert("Error: There's a problem with the server")
-        console.log(error);
-        return totalPages;
-    }
-}
+// //PAGINATION
+const previousPage = (<HTMLButtonElement>document.getElementById("previousPage"));
+const nextPage = (<HTMLButtonElement>document.getElementById("nextPage"));
+const firstPage = (<HTMLButtonElement>document.getElementById("firstPage"));
+const lastPage = (<HTMLButtonElement>document.getElementById("lastPage"));
 
-//Next Page
-const goNextPage = () => {
-    page += 1;
-    offset += 20; 
-}
-
-nextPage.addEventListener("click", async () => {
-    try{
-        if (cardId == "all") {
-            const totalPages = await getPages(filters(offset));
-            if(page <= totalPages){
-                await goNextPage();
-                createCards(offset, filters(offset)); 
-                disableButtons(filters(offset));
-            }
-        } else {
-            const totalPages = await getPages(cardsResponse);
-            if(page <= totalPages){
-                await goNextPage();
-                createCards(offset, callInfoMethods(offset)); 
-                disableButtons(cardsResponse);
-            }
-        }
-    }
-    catch(error){
-        alert("Error: There's a problem with the server")
-        console.log(error);
-    }
+nextPage.addEventListener("click", () => {
+    const params = new URLSearchParams(window.location.search);
+    let page = parseInt(params.get("page")) + 1;
+    let offset = (page-1)*20;
+    params.set("offset", offset.toString());
+    params.set("page", page.toString())
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
 });
 
 //Previous Page
-const goPreviousPage = () => {
-    page -= 1;
-    offset -= 20;  
-}
-
 previousPage.addEventListener("click", () => {
-    if(page > 1){
-        goPreviousPage();
-        if (cardId == "all") {
-            createCards(offset, filters(offset));
-            disableButtons(filters(offset));
-        } else {
-            createCards(offset, callInfoMethods(offset));
-            disableButtons(cardsResponse);
-        }
-    }
+    const params = new URLSearchParams(window.location.search);
+    let page = parseInt(params.get("page")) - 1;
+    let offset = (page-1)*20;
+    params.set("offset", offset.toString());
+    params.set("page", page.toString())
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
 });
 
 //First Page
-const goFirstPage = () => {
-    page = 1;
-    offset = 0; 
-}
-
 firstPage.addEventListener("click", () => {
-    if(page > 1){
-        goFirstPage();
-        if (cardId == "all"){
-            createCards(offset, filters(offset)); 
-            disableButtons(filters(offset));
-        } else {
-            createCards(offset, callInfoMethods(offset));
-            disableButtons(cardsResponse);
-        }
-    }
+    const params = new URLSearchParams(window.location.search);
+    params.set("offset", "0");
+    params.set("page", "1")
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
 });
 
 //Last Page
-const goLastPage = async () => {
-    try{
-        let totalPages;
-        if (cardId == "all") {
-            totalPages = await getPages(filters(offset));
-        } else {
-            totalPages = await getPages(cardsResponse);
-        }
-        page = totalPages;
-        offset = (totalPages-1)*20;
-    }
-    catch(error){
-        alert("Error: There's a problem with the server")
-        console.log(error);
-    }
-}
-    
 lastPage.addEventListener("click", async () => { 
-    try{
-        if (cardId == "all") {
-        const totalPages = await getPages(filters(offset));
-            if(page <= totalPages){
-                await goLastPage();
-                createCards(offset, filters(offset));
-                disableButtons(filters(offset));
-            }
-        } else {
-            const totalPages = await getPages(cardsResponse);
-            if(page <= totalPages){
-                await goLastPage();
-                createCards(offset, callInfoMethods(offset));
-                disableButtons(cardsResponse);
-            }
-        }
-    }
-    catch(error){
-        alert("Error: There's a problem with the server")
-        console.log(error);
-    }
+    const params = new URLSearchParams(window.location.search);
+    let page = totalPages;
+    let offset = (page-1)*20;
+    params.set("offset", offset.toString());
+    params.set("page", page.toString())
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
 });
-
-
-//CARDS INITIALIZATION
-const initFirstPage = () => {
-    createCards(offset, filters(offset));
-    disableButtons(filters(offset));
-}
-
-initFirstPage();
-
-//SEARCHER BUTTON
-const searcherButton = document.getElementById("searcherButton");
-searcherButton.addEventListener('click', () => {
-    cardId = "all";
-    console.log(cardId);
-    cardsSectionSubTitle.innerHTML = "Results";
-    cardInfo.innerHTML="";
-    createCards(offset, filters(offset));
-    updateResultsCount(0);
-})
-
 

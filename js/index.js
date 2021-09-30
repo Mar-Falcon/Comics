@@ -36,116 +36,95 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 var cardsContainer = document.getElementById("cardsContainer");
-var offset = 0;
-var page = 1;
-var cardId = "all";
+var totalPages;
 //Number of Cards - Results
 var updateResultsCount = function (count) {
     var cardsSectionResultados = document.getElementById("cardsSectionResults");
     cardsSectionResultados.innerHTML = count + " RESULTS";
 };
 //Creating Cards
-var createCards = function (offset, expectedfunction) { return __awaiter(_this, void 0, void 0, function () {
-    var response, total, data, error_1;
+var createCards = function (response, type) {
+    cardsContainer.innerHTML = "";
+    var total = response.data.total;
+    updateResultsCount(total);
+    var data = response.data.results;
+    console.log(response);
+    data.forEach(function (element) {
+        var a = document.createElement("a");
+        var card = document.createElement("div");
+        var img = document.createElement("img");
+        var title = document.createElement("h3");
+        a.setAttribute("href", "details.html?id=" + element.id + "&type=" + type + "&page=1");
+        if (element.thumbnail.path === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available") {
+            img.setAttribute("src", "noImage.jpg");
+        }
+        else {
+            img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
+        }
+        var titleTxt = document.createTextNode(element.title || element.name);
+        img.classList.add("card__img");
+        title.classList.add("card__h3");
+        card.classList.add("card");
+        a.classList.add("anchor");
+        a.appendChild(img);
+        title.appendChild(titleTxt);
+        a.appendChild(title);
+        card.appendChild(a);
+        cardsContainer.appendChild(card);
+    });
+};
+//URL, METHODS
+var baseUrl = "http://gateway.marvel.com/";
+var apiKey = "3837d58127c2d8d73d7bda851100d507";
+var hash = "1fcfb0ff82123c45591cd5affb7b538f";
+//GET DATA
+//Get Data Comics
+var getDataComics = function (param) { return __awaiter(_this, void 0, void 0, function () {
+    var data, response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                cardsContainer.innerHTML = "";
-                return [4 /*yield*/, expectedfunction];
+                data = [];
+                _a.label = 1;
             case 1:
-                response = _a.sent();
-                total = response.data.total;
-                updateResultsCount(total);
-                data = response.data.results;
-                data.forEach(function (element) {
-                    var card = document.createElement("div");
-                    var img = document.createElement("img");
-                    var title = document.createElement("h3");
-                    img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
-                    var titleTxt;
-                    if (selType.value === "comics") { //<-- Comic title
-                        titleTxt = document.createTextNode(element.title || element.name);
-                    }
-                    else { //<-- Character name
-                        titleTxt = document.createTextNode(element.name || element.title);
-                    }
-                    img.classList.add("card__img");
-                    title.classList.add("card__h3");
-                    card.classList.add("card");
-                    card.dataset.id = element.id;
-                    img.dataset.id = element.id;
-                    title.dataset.id = element.id;
-                    card.appendChild(img);
-                    title.appendChild(titleTxt);
-                    card.appendChild(title);
-                    cardsContainer.appendChild(card);
-                });
-                return [3 /*break*/, 3];
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, fetch(baseUrl + "v1/public/comics" + param)];
             case 2:
+                response = _a.sent();
+                return [4 /*yield*/, response.json()];
+            case 3:
+                data = _a.sent();
+                return [2 /*return*/, data];
+            case 4:
                 error_1 = _a.sent();
-                alert("Error: There's a problem with the server");
                 console.log(error_1);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [2 /*return*/, data];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
-//PAGINATION
-var previousPage = document.getElementById("previousPage");
-var nextPage = document.getElementById("nextPage");
-var firstPage = document.getElementById("firstPage");
-var lastPage = document.getElementById("lastPage");
-//Disabling buttons
-var disableButtons = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, error_2;
+//Get Data Characters
+var getDataCharacters = function (param) { return __awaiter(_this, void 0, void 0, function () {
+    var data, response, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                //Previous and first page buttons
-                if (page === 1) {
-                    previousPage.classList.remove('enabledButton');
-                    previousPage.classList.add('disabledButton');
-                    previousPage.disabled = true;
-                    firstPage.classList.remove('enabledButton');
-                    firstPage.classList.add('disabledButton');
-                    firstPage.disabled = true;
-                }
-                else {
-                    previousPage.classList.add('enabledButton');
-                    previousPage.classList.remove('disabledButton');
-                    previousPage.disabled = false;
-                    firstPage.classList.add('enabledButton');
-                    firstPage.classList.remove('disabledButton');
-                    firstPage.disabled = false;
-                }
-                return [4 /*yield*/, getPages(functionExpected)];
+                data = [];
+                _a.label = 1;
             case 1:
-                totalPages = _a.sent();
-                if (page === totalPages) {
-                    nextPage.classList.remove('enabledButton');
-                    nextPage.classList.add('disabledButton');
-                    nextPage.disabled = true;
-                    lastPage.classList.remove('enabledButton');
-                    lastPage.classList.add('disabledButton');
-                    lastPage.disabled = true;
-                }
-                else {
-                    nextPage.classList.add('enabledButton');
-                    nextPage.classList.remove('disabledButton');
-                    nextPage.disabled = false;
-                    lastPage.classList.add('enabledButton');
-                    lastPage.classList.remove('disabledButton');
-                    lastPage.disabled = false;
-                }
-                return [3 /*break*/, 3];
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, fetch(baseUrl + "/v1/public/characters" + param)];
             case 2:
+                response = _a.sent();
+                return [4 /*yield*/, response.json()];
+            case 3:
+                data = _a.sent();
+                return [2 /*return*/, data];
+            case 4:
                 error_2 = _a.sent();
-                alert("Error: There's a problem with the server");
                 console.log(error_2);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [2 /*return*/, data];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
@@ -171,173 +150,107 @@ var getPages = function (functionExpected) { return __awaiter(_this, void 0, voi
                 return [2 /*return*/, totalPages];
             case 3:
                 error_3 = _a.sent();
-                alert("Error: There's a problem with the server");
                 console.log(error_3);
                 return [2 /*return*/, totalPages];
             case 4: return [2 /*return*/];
         }
     });
 }); };
-//Next Page
-var goNextPage = function () {
-    page += 1;
-    offset += 20;
-};
-nextPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, totalPages, error_4;
+//Disabling buttons
+var disableButtons = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
+    var params, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 8, , 9]);
-                if (!(cardId == "all")) return [3 /*break*/, 4];
-                return [4 /*yield*/, getPages(filters(offset))];
+                params = new URLSearchParams(window.location.search);
+                _a.label = 1;
             case 1:
-                totalPages = _a.sent();
-                if (!(page <= totalPages)) return [3 /*break*/, 3];
-                return [4 /*yield*/, goNextPage()];
+                _a.trys.push([1, 3, , 4]);
+                //Previous and first page buttons
+                if (parseInt(params.get("page")) === 1) {
+                    previousPage.classList.remove('enabledButton');
+                    previousPage.classList.add('disabledButton');
+                    previousPage.disabled = true;
+                    firstPage.classList.remove('enabledButton');
+                    firstPage.classList.add('disabledButton');
+                    firstPage.disabled = true;
+                }
+                else {
+                    previousPage.classList.add('enabledButton');
+                    previousPage.classList.remove('disabledButton');
+                    previousPage.disabled = false;
+                    firstPage.classList.add('enabledButton');
+                    firstPage.classList.remove('disabledButton');
+                    firstPage.disabled = false;
+                }
+                return [4 /*yield*/, getPages(functionExpected)];
             case 2:
-                _a.sent();
-                createCards(offset, filters(offset));
-                disableButtons(filters(offset));
-                _a.label = 3;
-            case 3: return [3 /*break*/, 7];
-            case 4: return [4 /*yield*/, getPages(cardsResponse)];
-            case 5:
+                //Next and last page buttons
                 totalPages = _a.sent();
-                if (!(page <= totalPages)) return [3 /*break*/, 7];
-                return [4 /*yield*/, goNextPage()];
-            case 6:
-                _a.sent();
-                createCards(offset, callInfoMethods(offset));
-                disableButtons(cardsResponse);
-                _a.label = 7;
-            case 7: return [3 /*break*/, 9];
-            case 8:
-                error_4 = _a.sent();
-                alert("Error: There's a problem with the server");
-                console.log(error_4);
-                return [3 /*break*/, 9];
-            case 9: return [2 /*return*/];
-        }
-    });
-}); });
-//Previous Page
-var goPreviousPage = function () {
-    page -= 1;
-    offset -= 20;
-};
-previousPage.addEventListener("click", function () {
-    if (page > 1) {
-        goPreviousPage();
-        if (cardId == "all") {
-            createCards(offset, filters(offset));
-            disableButtons(filters(offset));
-        }
-        else {
-            createCards(offset, callInfoMethods(offset));
-            disableButtons(cardsResponse);
-        }
-    }
-});
-//First Page
-var goFirstPage = function () {
-    page = 1;
-    offset = 0;
-};
-firstPage.addEventListener("click", function () {
-    if (page > 1) {
-        goFirstPage();
-        if (cardId == "all") {
-            createCards(offset, filters(offset));
-            disableButtons(filters(offset));
-        }
-        else {
-            createCards(offset, callInfoMethods(offset));
-            disableButtons(cardsResponse);
-        }
-    }
-});
-//Last Page
-var goLastPage = function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, error_5;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 5, , 6]);
-                totalPages = void 0;
-                if (!(cardId == "all")) return [3 /*break*/, 2];
-                return [4 /*yield*/, getPages(filters(offset))];
-            case 1:
-                totalPages = _a.sent();
+                if (parseInt(params.get("page")) === totalPages) {
+                    nextPage.classList.remove('enabledButton');
+                    nextPage.classList.add('disabledButton');
+                    nextPage.disabled = true;
+                    lastPage.classList.remove('enabledButton');
+                    lastPage.classList.add('disabledButton');
+                    lastPage.disabled = true;
+                }
+                else {
+                    nextPage.classList.add('enabledButton');
+                    nextPage.classList.remove('disabledButton');
+                    nextPage.disabled = false;
+                    lastPage.classList.add('enabledButton');
+                    lastPage.classList.remove('disabledButton');
+                    lastPage.disabled = false;
+                }
                 return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, getPages(cardsResponse)];
             case 3:
-                totalPages = _a.sent();
-                _a.label = 4;
-            case 4:
-                page = totalPages;
-                offset = (totalPages - 1) * 20;
-                return [3 /*break*/, 6];
-            case 5:
-                error_5 = _a.sent();
-                alert("Error: There's a problem with the server");
-                console.log(error_5);
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                error_4 = _a.sent();
+                console.log(error_4);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
+// //PAGINATION
+var previousPage = document.getElementById("previousPage");
+var nextPage = document.getElementById("nextPage");
+var firstPage = document.getElementById("firstPage");
+var lastPage = document.getElementById("lastPage");
+nextPage.addEventListener("click", function () {
+    var params = new URLSearchParams(window.location.search);
+    var page = parseInt(params.get("page")) + 1;
+    var offset = (page - 1) * 20;
+    params.set("offset", offset.toString());
+    params.set("page", page.toString());
+    window.location.href = window.location.pathname + "?" + params.toString();
+});
+//Previous Page
+previousPage.addEventListener("click", function () {
+    var params = new URLSearchParams(window.location.search);
+    var page = parseInt(params.get("page")) - 1;
+    var offset = (page - 1) * 20;
+    params.set("offset", offset.toString());
+    params.set("page", page.toString());
+    window.location.href = window.location.pathname + "?" + params.toString();
+});
+//First Page
+firstPage.addEventListener("click", function () {
+    var params = new URLSearchParams(window.location.search);
+    params.set("offset", "0");
+    params.set("page", "1");
+    window.location.href = window.location.pathname + "?" + params.toString();
+});
+//Last Page
 lastPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
-    var totalPages, totalPages, error_6;
+    var params, page, offset;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 8, , 9]);
-                if (!(cardId == "all")) return [3 /*break*/, 4];
-                return [4 /*yield*/, getPages(filters(offset))];
-            case 1:
-                totalPages = _a.sent();
-                if (!(page <= totalPages)) return [3 /*break*/, 3];
-                return [4 /*yield*/, goLastPage()];
-            case 2:
-                _a.sent();
-                createCards(offset, filters(offset));
-                disableButtons(filters(offset));
-                _a.label = 3;
-            case 3: return [3 /*break*/, 7];
-            case 4: return [4 /*yield*/, getPages(cardsResponse)];
-            case 5:
-                totalPages = _a.sent();
-                if (!(page <= totalPages)) return [3 /*break*/, 7];
-                return [4 /*yield*/, goLastPage()];
-            case 6:
-                _a.sent();
-                createCards(offset, callInfoMethods(offset));
-                disableButtons(cardsResponse);
-                _a.label = 7;
-            case 7: return [3 /*break*/, 9];
-            case 8:
-                error_6 = _a.sent();
-                alert("Error: There's a problem with the server");
-                console.log(error_6);
-                return [3 /*break*/, 9];
-            case 9: return [2 /*return*/];
-        }
+        params = new URLSearchParams(window.location.search);
+        page = totalPages;
+        offset = (page - 1) * 20;
+        params.set("offset", offset.toString());
+        params.set("page", page.toString());
+        window.location.href = window.location.pathname + "?" + params.toString();
+        return [2 /*return*/];
     });
 }); });
-//CARDS INITIALIZATION
-var initFirstPage = function () {
-    createCards(offset, filters(offset));
-    disableButtons(filters(offset));
-};
-initFirstPage();
-//SEARCHER BUTTON
-var searcherButton = document.getElementById("searcherButton");
-searcherButton.addEventListener('click', function () {
-    cardId = "all";
-    console.log(cardId);
-    cardsSectionSubTitle.innerHTML = "Results";
-    cardInfo.innerHTML = "";
-    createCards(offset, filters(offset));
-    updateResultsCount(0);
-});
