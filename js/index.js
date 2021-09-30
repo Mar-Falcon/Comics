@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 var cardsContainer = document.getElementById("cardsContainer");
+var totalPages;
 //Number of Cards - Results
 var updateResultsCount = function (count) {
     var cardsSectionResultados = document.getElementById("cardsSectionResults");
@@ -47,13 +48,19 @@ var createCards = function (response, type) {
     var total = response.data.total;
     updateResultsCount(total);
     var data = response.data.results;
+    console.log(response);
     data.forEach(function (element) {
         var a = document.createElement("a");
         var card = document.createElement("div");
         var img = document.createElement("img");
         var title = document.createElement("h3");
         a.setAttribute("href", "details.html?id=" + element.id + "&type=" + type + "&page=1");
-        img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
+        if (element.thumbnail.path === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available") {
+            img.setAttribute("src", "noImage.jpg");
+        }
+        else {
+            img.setAttribute("src", element.thumbnail.path + "." + element.thumbnail.extension);
+        }
         var titleTxt = document.createTextNode(element.title || element.name);
         img.classList.add("card__img");
         title.classList.add("card__h3");
@@ -90,7 +97,6 @@ var getDataComics = function (param) { return __awaiter(_this, void 0, void 0, f
                 return [2 /*return*/, data];
             case 4:
                 error_1 = _a.sent();
-                alert("Error: There's a problem with the server");
                 console.log(error_1);
                 return [2 /*return*/, data];
             case 5: return [2 /*return*/];
@@ -116,7 +122,6 @@ var getDataCharacters = function (param) { return __awaiter(_this, void 0, void 
                 return [2 /*return*/, data];
             case 4:
                 error_2 = _a.sent();
-                alert("Error: There's a problem with the server");
                 console.log(error_2);
                 return [2 /*return*/, data];
             case 5: return [2 /*return*/];
@@ -145,7 +150,6 @@ var getPages = function (functionExpected) { return __awaiter(_this, void 0, voi
                 return [2 /*return*/, totalPages];
             case 3:
                 error_3 = _a.sent();
-                alert("Error: There's a problem with the server");
                 console.log(error_3);
                 return [2 /*return*/, totalPages];
             case 4: return [2 /*return*/];
@@ -154,7 +158,7 @@ var getPages = function (functionExpected) { return __awaiter(_this, void 0, voi
 }); };
 //Disabling buttons
 var disableButtons = function (functionExpected) { return __awaiter(_this, void 0, void 0, function () {
-    var params, totalPages, error_4;
+    var params, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -181,6 +185,7 @@ var disableButtons = function (functionExpected) { return __awaiter(_this, void 
                 }
                 return [4 /*yield*/, getPages(functionExpected)];
             case 2:
+                //Next and last page buttons
                 totalPages = _a.sent();
                 if (parseInt(params.get("page")) === totalPages) {
                     nextPage.classList.remove('enabledButton');
@@ -201,7 +206,6 @@ var disableButtons = function (functionExpected) { return __awaiter(_this, void 
                 return [3 /*break*/, 4];
             case 3:
                 error_4 = _a.sent();
-                alert("Error: There's a problem with the server");
                 console.log(error_4);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
@@ -209,32 +213,25 @@ var disableButtons = function (functionExpected) { return __awaiter(_this, void 
     });
 }); };
 // //PAGINATION
-var baseParams = "?ts=1&apikey=" + apiKey + "&hash=" + hash;
 var previousPage = document.getElementById("previousPage");
 var nextPage = document.getElementById("nextPage");
 var firstPage = document.getElementById("firstPage");
 var lastPage = document.getElementById("lastPage");
 nextPage.addEventListener("click", function () {
     var params = new URLSearchParams(window.location.search);
-    var page;
-    if (params.get("page")) {
-        page = parseInt(params.get("page"));
-    }
-    else {
-        page = 1;
-    }
-    var offset = page * 20;
+    var page = parseInt(params.get("page")) + 1;
+    var offset = (page - 1) * 20;
     params.set("offset", offset.toString());
-    params.set("page", (page + 1).toString());
+    params.set("page", page.toString());
     window.location.href = window.location.pathname + "?" + params.toString();
 });
 //Previous Page
 previousPage.addEventListener("click", function () {
     var params = new URLSearchParams(window.location.search);
-    var page = parseInt(params.get("page"));
-    var offset = (page - 2) * 20;
+    var page = parseInt(params.get("page")) - 1;
+    var offset = (page - 1) * 20;
     params.set("offset", offset.toString());
-    params.set("page", (page - 1).toString());
+    params.set("page", page.toString());
     window.location.href = window.location.pathname + "?" + params.toString();
 });
 //First Page
@@ -245,42 +242,15 @@ firstPage.addEventListener("click", function () {
     window.location.href = window.location.pathname + "?" + params.toString();
 });
 //Last Page
-// const goLastPage = async () => {
-//     try{
-//         let totalPages;
-//         if (cardId == "all") {
-//             totalPages = await getPages(filters(offset));
-//         } else {
-//             totalPages = await getPages(cardsResponse);
-//         }
-//         page = totalPages;
-//         offset = (totalPages-1)*20;
-//     }
-//     catch(error){
-//         alert("Error: There's a problem with the server")
-//         console.log(error);
-//     }
-// }
-// lastPage.addEventListener("click", async () => { 
-//     try{
-//         if (cardId == "all") {
-//         const totalPages = await getPages(filters(offset));
-//             if(page <= totalPages){
-//                 await goLastPage();
-//                 createCards(offset, filters(offset));
-//                 disableButtons(filters(offset));
-//             }
-//         } else {
-//             const totalPages = await getPages(cardsResponse);
-//             if(page <= totalPages){
-//                 await goLastPage();
-//                 createCards(offset, callInfoMethods(offset));
-//                 disableButtons(cardsResponse);
-//             }
-//         }
-//     }
-//     catch(error){
-//         alert("Error: There's a problem with the server")
-//         console.log(error);
-//     }
-// });
+lastPage.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
+    var params, page, offset;
+    return __generator(this, function (_a) {
+        params = new URLSearchParams(window.location.search);
+        page = totalPages;
+        offset = (page - 1) * 20;
+        params.set("offset", offset.toString());
+        params.set("page", page.toString());
+        window.location.href = window.location.pathname + "?" + params.toString();
+        return [2 /*return*/];
+    });
+}); });

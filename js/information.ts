@@ -145,7 +145,6 @@ const getCardInfo = async () => {
         disableButtons(cardsResponse);
     }
     catch(error){
-        alert("Error: There's a problem with the server")
         console.log(error);
     }
 }

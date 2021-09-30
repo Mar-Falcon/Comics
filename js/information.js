@@ -189,7 +189,6 @@ var getCardInfo = function () { return __awaiter(_this, void 0, void 0, function
                 return [3 /*break*/, 9];
             case 8:
                 error_1 = _a.sent();
-                alert("Error: There's a problem with the server");
                 console.log(error_1);
                 return [3 /*break*/, 9];
             case 9: return [2 /*return*/];

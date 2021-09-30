@@ -59,7 +59,6 @@ const getDataFiltered = async (offset, searchedTxt, type, orderBy) => {
         disableButtons(response);
     }
     catch(error){
-        alert("Error: There's a problem with the server")
         console.log(error);
     }
 }
@@ -71,7 +70,7 @@ const params = new URLSearchParams(window.location.search);
     let type = params.get("type");
     let orderBy = params.get("orderBy");
     let offset = params.get("offset");
-if(window.location.search === ""){
+if(window.location.search === ""){ //The only time the url doesn´t have query params it´s at initialization
     location.replace(`${window.location.pathname}?type=comics&orderBy=title&searchedTxt=&page=1`);
     getDataFiltered(offset || "0", searchedTxt || "", type || "comics", orderBy || "title");
 } else {

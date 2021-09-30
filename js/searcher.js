@@ -110,7 +110,6 @@ var getDataFiltered = function (offset, searchedTxt, type, orderBy) { return __a
                 return [3 /*break*/, 12];
             case 11:
                 error_1 = _a.sent();
-                alert("Error: There's a problem with the server");
                 console.log(error_1);
                 return [3 /*break*/, 12];
             case 12: return [2 /*return*/];
@@ -123,7 +122,7 @@ var searchedTxt = params.get("searchedTxt");
 var type = params.get("type");
 var orderBy = params.get("orderBy");
 var offset = params.get("offset");
-if (window.location.search === "") {
+if (window.location.search === "") { //The only time the url doesn´t have query params it´s at initialization
     location.replace(window.location.pathname + "?type=comics&orderBy=title&searchedTxt=&page=1");
     getDataFiltered(offset || "0", searchedTxt || "", type || "comics", orderBy || "title");
 }
